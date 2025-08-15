@@ -22,6 +22,43 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Lists",
+            "pages": [
+              "api-reference/lists/create-or-update-a-list-member",
+              "api-reference/lists/add-a-record-to-a-list",
+              "api-reference/lists/get-records-from-a-specific-list",
+              "api-reference/lists/update-a-record-within-a-list",
+              "api-reference/lists/list-all-lists-for-a-specific-object"
+            ]
+          },
+          {
+            "group": "Objects",
+            "pages": [
+              "api-reference/objects/list-all-objects-in-the-workspace"
+            ]
+          },
+          {
+            "group": "Records",
+            "pages": [
+              "api-reference/records/create-or-update-a-record",
+              "api-reference/records/create-a-new-record",
+              "api-reference/records/list-records-for-a-specific-object-type",
+              "api-reference/records/get-a-specific-record-by-id",
+              "api-reference/records/update-an-existing-record"
+            ]
+          }
+        ]
       }
     ],
     "global": {

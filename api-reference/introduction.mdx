@@ -1,33 +1,46 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API Reference'
+description: 'REST API for accessing and managing NEX CRM data'
 ---
-
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
 
 ## Welcome
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+The NEX CRM Developer API provides programmatic access to your CRM data. Generate API keys from the NEX web UI and use them to authenticate requests.
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  title="NEX CRM API Specification"
+  icon="database"
+  href="/api-reference/openapi.json"
 >
-  View the OpenAPI specification file
+  View the complete OpenAPI specification
 </Card>
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints are authenticated using API keys. Include your API key in the request headers:
+
+```http
+X-API-Key: your_api_key_here
+```
+
+The API uses the following security scheme as defined in the OpenAPI specification:
 
 ```json
 "security": [
   {
-    "bearerAuth": []
+    "ApiKeyAuth": []
   }
 ]
 ```
+
+## Base URL
+
+The API is available at: `https://api.nex.ai/api`
+
+## Available Endpoints
+
+The API provides access to the following resources:
+
+- **Lists**: Manage contact lists and list memberships
+- **Objects**: Access and manage CRM object definitions
+- **Records**: Create, read, update, and delete CRM records

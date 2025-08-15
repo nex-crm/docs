@@ -1,0 +1,14 @@
+{
+  "name": "nex-docs",
+  "version": "1.0.0",
+  "description": "NEX CRM API Documentation",
+  "scripts": {
+    "dev": "mintlify dev",
+    "update-api-docs": "./scripts/update-api-docs.sh",
+    "validate-openapi": "mintlify openapi-check api-reference/openapi.json"
+  },
+  "dependencies": {
+    "@mintlify/scraping": "latest",
+    "swagger2openapi": "latest"
+  }
+}
