@@ -1,14 +1,14 @@
 ---
 title: 'API Reference'
-description: 'REST API for accessing and managing NEX CRM data'
+description: 'REST API for accessing and managing Nex CRM data'
 ---
 
 ## Welcome
 
-The NEX CRM Developer API provides programmatic access to your CRM data. Generate API keys from the NEX web UI and use them to authenticate requests.
+The Nex Developer API provides programmatic access to your CRM data. Generate API keys from the Nex web UI and use them to authenticate requests.
 
 <Card
-  title="NEX CRM API Specification"
+  title="Nex API Specification"
   icon="database"
   href="/api-reference/openapi.json"
 >
@@ -17,30 +17,206 @@ The NEX CRM Developer API provides programmatic access to your CRM data. Generat
 
 ## Authentication
 
-All API endpoints are authenticated using API keys. Include your API key in the request headers:
+All API endpoints are authenticated using API keys. Include your API key in the Authorization header:
 
 ```http
-X-API-Key: your_api_key_here
-```
-
-The API uses the following security scheme as defined in the OpenAPI specification:
-
-```json
-"security": [
-  {
-    "ApiKeyAuth": []
-  }
-]
+Authorization: Bearer YOUR_API_KEY
 ```
 
 ## Base URL
 
-The API is available at: `https://api.nex.ai/api`
+All API requests should be made to:
 
-## Available Endpoints
+```
+https://app.nex.ai/api/developers
+```
 
-The API provides access to the following resources:
+## Data Model Overview
 
-- **Lists**: Manage contact lists and list memberships
-- **Objects**: Access and manage CRM object definitions
-- **Records**: Create, read, update, and delete CRM records
+Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data storage for different types of CRM records. This architecture allows you to:
+
+- Define custom object types (entity definitions) with their own attributes
+- Create records (entities) that conform to these definitions
+- Store attribute values that can be of various types (text, email, relationships, etc.)
+
+## Core Resources
+
+### Objects (Entity Definitions)
+
+Objects define the structure and schema for your CRM data types. Think of them as "templates" or "blueprints" for creating records.
+
+**Default Objects:**
+
+- **Person**: Individual contacts with attributes like name, email, job title, company relationships
+- **Company**: Organization records with attributes like name, domain, industry, team relationships
+
+**Example Person Object Response:**
+
+```json
+{
+  "id": "123",
+  "slug": "person",
+  "name": "Person",
+  "name_plural": "People",
+  "type": "person",
+  "description": "",
+  "created_at": "2024-01-15T10:00:00Z",
+  "attributes": [
+    {
+      "id": "456",
+      "slug": "name",
+      "type": "full_name",
+      "name": "Name",
+      "description": "",
+      "options": {
+        "is_multi_value": false,
+        "is_required": true,
+        "is_unique": false
+      }
+    },
+    {
+      "id": "789",
+      "slug": "email_addresses",
+      "type": "email",
+      "name": "Email Addresses",
+      "description": "",
+      "options": {
+        "is_multi_value": true,
+        "is_required": false,
+        "is_unique": true
+      }
+    }
+  ]
+}
+```
+
+### Records (Entities)
+
+Records are instances of your object definitions - the actual data entries in your CRM.
+
+**Example Person Record Response:**
+
+```json
+{
+  "id": "789",
+  "object_id": "123",
+  "type": "person",
+  "workspace_id": "456",
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-20T14:30:00Z",
+  "attributes": {
+    "name": "John Smith",
+    "email_addresses": ["john@example.com", "j.smith@company.com"],
+    "job_title": "Software Engineer"
+  }
+}
+```
+
+**Example Create Record Request (Simple Format):**
+
+```json
+{
+  "attributes": {
+    "name": "Jane Doe",
+    "email_addresses": ["jane@company.com"],
+    "job_title": "Product Manager",
+    "phone_number": "+1-555-123-4567",
+    "location": "Boston, MA"
+  }
+}
+```
+
+**Example Create Record Request (Structured Format):**
+
+```json
+{
+  "attributes": {
+    "name": {
+      "first_name": "Jane",
+      "last_name": "Doe"
+    },
+    "email_addresses": ["jane@company.com"],
+    "job_title": "Product Manager",
+    "phone_number": {
+      "country_code": 1,
+      "number": "5551234567"
+    },
+    "location": {
+      "street": "123 Main St",
+      "city": "Boston",
+      "region": "MA",
+      "postal_code": "02134",
+      "country": "US"
+    }
+  }
+}
+```
+
+> **Note**: For many attribute types like `full_name`, `phone`, and `location`, you can use either simple string values (e.g., `"John Smith"`) or structured objects (e.g., `{"first_name": "John", "last_name": "Smith"}`). The API accepts both formats - use whichever is more convenient for your application.
+
+### Lists
+
+Lists allow you to organize and group records for campaigns, segments, or any custom categorization. Lists are associated with specific object types (e.g., person lists, company lists).
+
+## Attribute Options
+
+Each attribute definition includes options that control its behavior:
+
+**Common Options:**
+
+- `is_multi_value`: Allow multiple values (e.g., multiple email addresses)
+- `is_required`: Field must be provided when creating records
+- `is_unique`: Values must be unique across all records of this type
+
+**Type-Specific Options:**
+
+- **Select fields**: Include `select_options` array with predefined choices
+- **Number fields**: `is_whole_number` and `use_raw_format` for formatting
+- **Social profiles**: `social_platform` specifies the platform (LinkedIn, Twitter/X)
+
+**Example Company Record with Multi-Value Attributes:**
+
+```json
+{
+  "id": "12345",
+  "object_id": "456",
+  "type": "company",
+  "workspace_id": "789",
+  "created_at": "2024-01-15T14:20:00Z",
+  "updated_at": "2024-01-20T09:15:00Z",
+  "attributes": {
+    "name": "TechCorp Inc",
+    "domains": ["techcorp.com", "techcorp.io"],
+    "industries": ["Technology", "SaaS"],
+    "size": 250,
+    "founding_year": 2018,
+    "description": "Leading provider of enterprise software solutions",
+    "location": "Austin, TX"
+  }
+}
+```
+
+**Example List Records Request:**
+
+```json
+{
+  "attributes": {
+    "mode": "custom",
+    "slugs": ["name", "email_addresses", "job_title", "company"]
+  },
+  "limit": 25,
+  "offset": 0,
+  "sort": {
+    "attribute": "name",
+    "direction": "asc"
+  }
+}
+```
+
+## Common Use Cases
+
+- **Contact Management**: Create and update person and company records
+- **Relationship Mapping**: Link people to companies and track team structures
+- **List Management**: Organize contacts into targeted lists
+- **Custom Fields**: Add custom attributes to default object types
+- **Data Enrichment**: Update records with additional information from external sources
