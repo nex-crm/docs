@@ -1107,7 +1107,9 @@
                             "first_name": "Sarah",
                             "last_name": "Chen"
                         },
-                        "email_addresses": ["sarah@newstartup.com"],
+                        "email_addresses": [
+                            "sarah@newstartup.com"
+                        ],
                         "job_title": "VP Engineering",
                         "source": "website",
                         "status": "new",
@@ -1118,9 +1120,29 @@
             },
             "developer.CreateRecordRequest": {
                 "type": "object",
+                "required": [
+                    "attributes"
+                ],
                 "properties": {
                     "attributes": {
                         "type": "object",
+                        "required": [
+                            "name"
+                        ],
+                        "properties": {
+                            "name": {
+                                "description": "Can be a string (e.g., 'John Doe') or an object (e.g., {'first_name': 'John', 'last_name': 'Doe'} for Person objects).",
+                                "oneOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "additionalProperties": {}
+                                    }
+                                ]
+                            }
+                        },
                         "additionalProperties": {}
                     }
                 },
@@ -1130,7 +1152,10 @@
                             "first_name": "John",
                             "last_name": "Doe"
                         },
-                        "email_addresses": ["john@example.com"],
+                        "name (alternative)": "John Doe",
+                        "email_addresses": [
+                            "john@example.com"
+                        ],
                         "phone_number": {
                             "country_code": 1,
                             "number": "5551234567"
@@ -1184,7 +1209,9 @@
                             "first_name": "John",
                             "last_name": "Doe"
                         },
-                        "email_addresses": ["john@example.com"],
+                        "email_addresses": [
+                            "john@example.com"
+                        ],
                         "phone_number": {
                             "country_code": 1,
                             "number": "5551234567"
@@ -1291,10 +1318,22 @@
                                         "is_required": false,
                                         "is_unique": false,
                                         "select_options": [
-                                            {"id": "tech", "name": "Technology"},
-                                            {"id": "finance", "name": "Financial Services"},
-                                            {"id": "healthcare", "name": "Healthcare"},
-                                            {"id": "retail", "name": "Retail"}
+                                            {
+                                                "id": "tech",
+                                                "name": "Technology"
+                                            },
+                                            {
+                                                "id": "finance",
+                                                "name": "Financial Services"
+                                            },
+                                            {
+                                                "id": "healthcare",
+                                                "name": "Healthcare"
+                                            },
+                                            {
+                                                "id": "retail",
+                                                "name": "Retail"
+                                            }
                                         ]
                                     }
                                 }
@@ -1362,7 +1401,9 @@
                                     "first_name": "Alice",
                                     "last_name": "Johnson"
                                 },
-                                "email_addresses": ["alice@techcorp.com"],
+                                "email_addresses": [
+                                    "alice@techcorp.com"
+                                ],
                                 "job_title": "Product Manager",
                                 "phone_number": {
                                     "country_code": 1,
@@ -1382,7 +1423,9 @@
                                     "first_name": "Bob",
                                     "last_name": "Wilson"
                                 },
-                                "email_addresses": ["bob@startup.io"],
+                                "email_addresses": [
+                                    "bob@startup.io"
+                                ],
                                 "job_title": "Founder",
                                 "location": {
                                     "city": "San Francisco",
@@ -1467,7 +1510,9 @@
                             "first_name": "Alice",
                             "last_name": "Johnson"
                         },
-                        "email_addresses": ["alice@techcorp.com"],
+                        "email_addresses": [
+                            "alice@techcorp.com"
+                        ],
                         "job_title": "Product Manager",
                         "phone_number": {
                             "country_code": 1,
@@ -1567,7 +1612,9 @@
                             "first_name": "Sarah",
                             "last_name": "Chen"
                         },
-                        "email_addresses": ["sarah@newstartup.com"],
+                        "email_addresses": [
+                            "sarah@newstartup.com"
+                        ],
                         "job_title": "VP Engineering",
                         "status": "qualified",
                         "score": 92,
@@ -1638,7 +1685,9 @@
                             "first_name": "John",
                             "last_name": "Doe"
                         },
-                        "email_addresses": ["john@example.com"],
+                        "email_addresses": [
+                            "john@example.com"
+                        ],
                         "job_title": "Senior Engineer",
                         "phone_number": {
                             "country_code": 1,
@@ -1654,9 +1703,30 @@
             },
             "developer.UpsertRecordRequest": {
                 "type": "object",
+                "required": [
+                    "attributes",
+                    "matching_attribute"
+                ],
                 "properties": {
                     "attributes": {
                         "type": "object",
+                        "required": [
+                            "name"
+                        ],
+                        "properties": {
+                            "name": {
+                                "description": "Required when creating a new record, but optional when updating an existing record that already has a name. Can be a string (e.g., 'John Doe') or an object (e.g., {'first_name': 'John', 'last_name': 'Doe'} for Person objects).",
+                                "oneOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "additionalProperties": {}
+                                    }
+                                ]
+                            }
+                        },
                         "additionalProperties": {}
                     },
                     "matching_attribute": {
@@ -1671,7 +1741,9 @@
                             "first_name": "Jane",
                             "last_name": "Smith"
                         },
-                        "email_addresses": ["jane@example.com"],
+                        "email_addresses": [
+                            "jane@example.com"
+                        ],
                         "job_title": "CTO",
                         "phone_number": {
                             "country_code": 1,
@@ -1718,7 +1790,9 @@
                             "first_name": "Jane",
                             "last_name": "Smith"
                         },
-                        "email_addresses": ["jane@example.com"],
+                        "email_addresses": [
+                            "jane@example.com"
+                        ],
                         "job_title": "CTO",
                         "phone_number": {
                             "country_code": 1,
