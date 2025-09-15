@@ -14,11 +14,11 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Creates a new record or updates an existing one and ensures it's in the specified list",
+                "description": "Add record to a list or update its list-specific attributes if it already exists",
                 "tags": [
                     "Lists"
                 ],
-                "summary": "Create or update a list member",
+                "summary": "Upsert a list member",
                 "parameters": [
                     {
                         "description": "List ID",
@@ -43,7 +43,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Created or updated record in the list",
+                        "description": "Created or updated list member",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -100,11 +100,11 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Creates a new record and adds it to the specified list",
+                "description": "Add record to a list",
                 "tags": [
                     "Lists"
                 ],
-                "summary": "Add a record to a list",
+                "summary": "Add a list member",
                 "parameters": [
                     {
                         "description": "List ID",
@@ -129,7 +129,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Created record added to the list",
+                        "description": "Created list member",
                         "content": {
                             "application/json": {
                                 "schema": {
