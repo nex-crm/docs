@@ -941,6 +941,133 @@
                     }
                 }
             }
+        },
+        "/v1/context/text": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add arbitrary context through unstructured text. This endpoint allows you to provide contextual information about (new or existing) people or companies.",
+                "tags": [
+                    "Context"
+                ],
+                "summary": "Add context",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.AddContextTextRequest"
+                            }
+                        }
+                    },
+                    "description": "Context text to add",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Context successfully added"
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/context/ask": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Query information about a specific entity using natural language. This endpoint allows you to ask questions about people, companies, or any other entities in your CRM.",
+                "tags": [
+                    "Context"
+                ],
+                "summary": "Query context",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.QueryContextRequest"
+                            }
+                        }
+                    },
+                    "description": "Query to ask about entities",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Query response with relevant information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.QueryContextResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "servers": [
@@ -1815,6 +1942,53 @@
                     "message": {
                         "type": "string"
                     }
+                }
+            },
+            "developer.AddContextTextRequest": {
+                "type": "object",
+                "required": [
+                    "content"
+                ],
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "description": "The unstructured text containing context information about people, companies, or other entities"
+                    },
+                    "context": {
+                        "type": "string",
+                        "description": "Optional additional context about the content (e.g., source, type of activity)"
+                    }
+                },
+                "example": {
+                    "content": "Marcus Rodriguez commented: \"Would love to book a demo\"",
+                    "context": "New LinkedIn activity"
+                }
+            },
+            "developer.QueryContextRequest": {
+                "type": "object",
+                "required": [
+                    "query"
+                ],
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Natural language query about entities or information"
+                    }
+                },
+                "example": {
+                    "query": "What's the status with techflow.io?"
+                }
+            },
+            "developer.QueryContextResponse": {
+                "type": "object",
+                "properties": {
+                    "answer": {
+                        "type": "string",
+                        "description": "Response to the query based on available context"
+                    }
+                },
+                "example": {
+                    "answer": "Based on the available context, techflow.io appears to be a technology company. Marcus Rodriguez from techflow.io expressed interest in booking a demo on LinkedIn."
                 }
             }
         }

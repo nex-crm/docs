@@ -55,6 +55,13 @@
               "api-reference/records/get-a-specific-record-by-id",
               "api-reference/records/update-an-existing-record"
             ]
+          },
+          {
+            "group": "Context",
+            "pages": [
+              "api-reference/context/add-context",
+              "api-reference/context/query-context"
+            ]
           }
         ]
       }
