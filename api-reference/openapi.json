@@ -2510,7 +2510,7 @@
                     }
                 },
                 "example": {
-                    "query": "all companies",
+                    "query": "all companies who have asked for a contract",
                     "object_type": "company",
                     "limit": 20,
                     "include_attributes": true
