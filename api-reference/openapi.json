@@ -2208,28 +2208,11 @@
                 "properties": {
                     "query": {
                         "type": "string",
-                        "description": "Natural language query - supports single entity questions, multi-entity questions, or general workspace questions"
+                        "description": "Natural language query - supports single entity questions (e.g., 'What's the status with techflow.io?'), multi-entity questions (e.g., 'Compare engagement levels of Acme Corp and TechFlow'), or general workspace questions (e.g., 'Which deals are most likely to close this quarter?')"
                     }
                 },
-                "examples": {
-                    "single_entity": {
-                        "summary": "Single entity query",
-                        "value": {
-                            "query": "What's the status with techflow.io?"
-                        }
-                    },
-                    "multi_entity": {
-                        "summary": "Multi-entity query",
-                        "value": {
-                            "query": "Compare the engagement levels of Acme Corp and TechFlow"
-                        }
-                    },
-                    "workspace_query": {
-                        "summary": "General workspace question",
-                        "value": {
-                            "query": "Which deals are most likely to close this quarter?"
-                        }
-                    }
+                "example": {
+                    "query": "What's the status with techflow.io?"
                 }
             },
             "developer.QueryContextResponse": {
