@@ -953,7 +953,7 @@
                 "tags": [
                     "Context"
                 ],
-                "summary": "Process and add context",
+                "summary": "Add context to workspace",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1020,7 +1020,7 @@
                 "tags": [
                     "Context"
                 ],
-                "summary": "Ask questions about your workspace",
+                "summary": "Ask AI a question",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1087,7 +1087,7 @@
                 "tags": [
                     "Context"
                 ],
-                "summary": "Get processed context artifact",
+                "summary": "Retrieve context artifact status",
                 "parameters": [
                     {
                         "description": "Artifact ID returned from ProcessText",
@@ -1164,7 +1164,7 @@
                 "tags": [
                     "AI Lists"
                 ],
-                "summary": "Create AI list job",
+                "summary": "Create an AI List",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -2292,9 +2292,9 @@
                                 "type": "integer",
                                 "description": "Number of new entities created"
                             },
-                            "entities_processed": {
+                            "entities_updated": {
                                 "type": "integer",
-                                "description": "Number of entities processed"
+                                "description": "Number of existing entities updated"
                             },
                             "relationships_created": {
                                 "type": "integer",
@@ -2335,12 +2335,29 @@
                                 "context_id": 38485049540083714,
                                 "canonical_entity_id": 25339323448557882,
                                 "properties": {
-                                    "name": "Adobe"
-                                }
+                                    "name": "Adobe",
+                                    "domain": "adobe.com"
+                                },
+                                "previous_properties": {
+                                    "name": "Adobe",
+                                    "domain": null
+                                },
+                                "is_new": false
+                            },
+                            {
+                                "type": "PERSON",
+                                "context_id": 38485049540083715,
+                                "canonical_entity_id": 25339323448557883,
+                                "properties": {
+                                    "name": "John Smith",
+                                    "email": "john.smith@adobe.com",
+                                    "job_title": "Product Manager"
+                                },
+                                "is_new": true
                             }
                         ],
                         "entities_created": 1,
-                        "entities_processed": 1,
+                        "entities_updated": 1,
                         "relationships_created": 1,
                         "insights_created": 3,
                         "tasks_suggested": 0
