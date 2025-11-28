@@ -60,7 +60,15 @@
             "group": "Context",
             "pages": [
               "api-reference/context/add-context",
+              "api-reference/context/get-artifact",
               "api-reference/context/query-context"
+            ]
+          },
+          {
+            "group": "AI Lists",
+            "pages": [
+              "api-reference/ai-lists/create-ai-list-job",
+              "api-reference/ai-lists/get-ai-list-job"
             ]
           }
         ]
