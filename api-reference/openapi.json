@@ -1304,6 +1304,154 @@
                     }
                 }
             }
+        },
+        "/v1/insights": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Query insights by time window. Supports two modes: (1) duration-based with `last` parameter (e.g., `?last=30m` for insights from the last 30 minutes), or (2) explicit time range with `from` and `to` parameters in RFC3339 UTC format. If neither is specified, returns the most recent insights.",
+                "tags": [
+                    "Insights"
+                ],
+                "summary": "Get insights",
+                "parameters": [
+                    {
+                        "description": "Duration window for recent insights (e.g., 30m, 2h, 1h30m). Cannot be combined with `from`/`to`.",
+                        "name": "last",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "30m"
+                    },
+                    {
+                        "description": "Start of time range in RFC3339 UTC format. Must be used with `to`.",
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "example": "2026-02-07T00:00:00Z"
+                    },
+                    {
+                        "description": "End of time range in RFC3339 UTC format. Must be used with `from`.",
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "example": "2026-02-08T00:00:00Z"
+                    },
+                    {
+                        "description": "Maximum number of insights to return (default: 20, max: 100)",
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Enriched insights with workspace context, entity signals, and evidence",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/insights.InsightBatchPayload"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid query parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - API key missing `insight.stream` scope",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/insights/stream": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Establish a Server-Sent Events (SSE) connection to receive real-time insight notifications. On connection, recent insights are replayed as `insight.replay` events. New insights arrive as `insight.batch.created` events. Keepalive comments are sent every 30 seconds.",
+                "tags": [
+                    "Insights"
+                ],
+                "summary": "Stream insights (SSE)",
+                "responses": {
+                    "200": {
+                        "description": "SSE stream established. Events are sent as `event: <type>\\ndata: <json>\\n\\n`.",
+                        "content": {
+                            "text/event-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "description": "SSE event stream. Event types: `insight.batch.created` (real-time), `insight.replay` (historical replay on connect)."
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - API key missing `insight.stream` scope",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "servers": [
@@ -2290,7 +2438,10 @@
                         "properties": {
                             "query_type": {
                                 "type": "string",
-                                "enum": ["workspace_wide", "entity_specific"],
+                                "enum": [
+                                    "workspace_wide",
+                                    "entity_specific"
+                                ],
                                 "description": "Whether the query was about specific entities or workspace-wide"
                             },
                             "total_entities_searched": {
@@ -2368,7 +2519,13 @@
                     },
                     "status": {
                         "type": "string",
-                        "enum": ["unknown", "pending", "processing", "completed", "failed"],
+                        "enum": [
+                            "unknown",
+                            "pending",
+                            "processing",
+                            "completed",
+                            "failed"
+                        ],
                         "description": "Current operation status"
                     },
                     "result": {
@@ -2529,7 +2686,9 @@
                             },
                             "status": {
                                 "type": "string",
-                                "enum": ["pending"],
+                                "enum": [
+                                    "pending"
+                                ],
                                 "description": "Initial job status (always 'pending')"
                             }
                         }
@@ -2555,7 +2714,12 @@
                             },
                             "status": {
                                 "type": "string",
-                                "enum": ["pending", "processing", "completed", "failed"],
+                                "enum": [
+                                    "pending",
+                                    "processing",
+                                    "completed",
+                                    "failed"
+                                ],
                                 "description": "Current job status"
                             },
                             "created_at": {
@@ -2631,8 +2795,12 @@
                                     "Active in Series A and B funding rounds"
                                 ],
                                 "attributes": {
-                                    "domains": ["sequoiacap.com"],
-                                    "industries": ["Venture Capital"]
+                                    "domains": [
+                                        "sequoiacap.com"
+                                    ],
+                                    "industries": [
+                                        "Venture Capital"
+                                    ]
                                 }
                             },
                             {
@@ -2645,6 +2813,219 @@
                                 ]
                             }
                         ]
+                    }
+                }
+            },
+            "insights.InsightBatchPayload": {
+                "type": "object",
+                "properties": {
+                    "workspace": {
+                        "type": "object",
+                        "description": "Workspace context",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "slug": {
+                                "type": "string"
+                            },
+                            "business_info": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "domain": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "settings": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "insights": {
+                        "type": "array",
+                        "description": "List of enriched insights",
+                        "items": {
+                            "$ref": "#/components/schemas/insights.EnrichedInsight"
+                        }
+                    },
+                    "operation_id": {
+                        "type": "integer",
+                        "description": "Source operation ID"
+                    },
+                    "insight_count": {
+                        "type": "integer",
+                        "description": "Number of insights in this batch"
+                    },
+                    "emitted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When this batch was emitted"
+                    }
+                }
+            },
+            "insights.EnrichedInsight": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "Insight type",
+                        "enum": [
+                            "opportunity",
+                            "risk",
+                            "relationship",
+                            "preference",
+                            "milestone",
+                            "goal",
+                            "pain_point",
+                            "commitment",
+                            "constraint",
+                            "requirement"
+                        ]
+                    },
+                    "type_description": {
+                        "type": "string",
+                        "description": "Human-readable description of the insight type"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The insight content"
+                    },
+                    "confidence": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Confidence score (0-1)"
+                    },
+                    "confidence_level": {
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "very_high"
+                        ],
+                        "description": "Human-readable confidence level"
+                    },
+                    "valid_from": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "valid_until": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "target": {
+                        "type": "object",
+                        "description": "The entity this insight is about",
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "type_description": {
+                                "type": "string"
+                            },
+                            "entity_type": {
+                                "type": "string"
+                            },
+                            "entity_type_description": {
+                                "type": "string"
+                            },
+                            "hint": {
+                                "type": "string",
+                                "description": "Best-guess display name for the entity"
+                            },
+                            "signals": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "type_description": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        },
+                                        "confidence": {
+                                            "type": "number"
+                                        },
+                                        "observation_count": {
+                                            "type": "integer"
+                                        },
+                                        "last_observed_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    }
+                                }
+                            },
+                            "anchors": {
+                                "type": "object"
+                            },
+                            "anchors_description": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "evidence": {
+                        "type": "array",
+                        "description": "Supporting evidence for this insight",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "excerpt": {
+                                    "type": "string",
+                                    "description": "The specific text that supports this insight"
+                                },
+                                "excerpt_description": {
+                                    "type": "string"
+                                },
+                                "artifact": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "type_description": {
+                                            "type": "string"
+                                        },
+                                        "occurred_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "subject": {
+                                            "type": "string"
+                                        },
+                                        "content": {
+                                            "type": "string"
+                                        },
+                                        "created_by": {
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

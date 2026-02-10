@@ -1,0 +1,42 @@
+---
+title: Get insights
+openapi: get /v1/insights
+---
+
+<Note>
+  This endpoint requires the `insight.stream` scope on your API key.
+</Note>
+
+## Query Modes
+
+### Last N minutes/hours
+
+Use the `last` parameter with a duration string:
+
+```bash
+# Insights from the last 30 minutes
+curl -s "https://app.nex.ai/api/developers/v1/insights?last=30m" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Insights from the last 2 hours
+curl -s "https://app.nex.ai/api/developers/v1/insights?last=2h" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Between two dates
+
+Use `from` and `to` parameters with RFC3339 UTC timestamps:
+
+```bash
+curl -s "https://app.nex.ai/api/developers/v1/insights?from=2026-02-07T00:00:00Z&to=2026-02-08T00:00:00Z" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Most recent (default)
+
+With no time parameters, returns the most recent insights:
+
+```bash
+curl -s "https://app.nex.ai/api/developers/v1/insights?limit=10" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
