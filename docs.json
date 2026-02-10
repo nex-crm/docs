@@ -66,6 +66,13 @@
             ]
           },
           {
+            "group": "Insights",
+            "pages": [
+              "api-reference/insights/get-insights",
+              "api-reference/insights/stream-insights"
+            ]
+          },
+          {
             "group": "AI Lists",
             "pages": [
               "api-reference/ai-lists/create-ai-list-job",

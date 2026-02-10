@@ -1,0 +1,37 @@
+---
+title: Stream insights (SSE)
+openapi: get /v1/insights/stream
+---
+
+<Note>
+  This endpoint requires the `insight.stream` scope on your API key.
+</Note>
+
+## Connection Behavior
+
+1. On connect, a comment is sent: `: connected workspace_id=... token_id=...`
+2. Recent insights are replayed as `insight.replay` events (up to 20)
+3. Keepalive comments (`: keepalive`) are sent every 30 seconds
+4. New insights arrive as `insight.batch.created` events in real-time
+
+## Example
+
+```bash
+curl -N -s "https://app.nex.ai/api/developers/v1/insights/stream" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: text/event-stream"
+```
+
+## Event Types
+
+| Event | Description |
+|-------|-------------|
+| `insight.batch.created` | Real-time: new insights just discovered |
+| `insight.replay` | Historical: recent insights sent on connection |
+
+## Event Format
+
+```
+event: insight.batch.created
+data: {"workspace":{...},"insights":[...],"insight_count":3,"emitted_at":"2026-02-07T10:30:00Z"}
+```
