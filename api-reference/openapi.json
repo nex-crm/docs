@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "description": "REST API for accessing and managing CRM data. Generate API keys from the Nex web UI and use them to authenticate requests.",
+        "description": "REST API for accessing and managing your Nex data. Generate API keys from the Nex web UI and use them to authenticate requests.",
         "title": "Nex Developer API",
         "contact": {},
         "version": "1.0"
@@ -4792,7 +4792,7 @@
                                         },
                                         "canonical_entity_id": {
                                             "type": "integer",
-                                            "description": "CRM entity ID (if linked)"
+                                            "description": "Entity ID (if linked)"
                                         },
                                         "properties": {
                                             "type": "object",
@@ -6054,7 +6054,7 @@
                                 }
                             }
                         },
-                        "description": "CRM entities referenced in this insight"
+                        "description": "Entities referenced in this insight"
                     },
                     "created_at": {
                         "type": "string",

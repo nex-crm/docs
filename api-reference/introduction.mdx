@@ -1,11 +1,11 @@
 ---
 title: 'API Reference'
-description: 'REST API for accessing and managing Nex CRM data'
+description: 'REST API for accessing and managing your Nex data'
 ---
 
 ## Welcome
 
-The Nex Developer API provides programmatic access to your CRM data. Generate API keys from the Nex web UI and use them to authenticate requests.
+The Nex Developer API provides programmatic access to your organizational context. Generate API keys from the Nex web UI and use them to authenticate requests.
 
 <Card
   title="Nex API Specification"
@@ -54,7 +54,7 @@ Each API key has specific scopes that control what operations it can perform. Re
 
 ## Data Model Overview
 
-Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data storage for different types of CRM records. This architecture allows you to:
+Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data storage for different types of records. This architecture allows you to:
 
 - Define custom object types (entity definitions) with their own attributes
 - Create records (entities) that conform to these definitions
@@ -66,7 +66,7 @@ Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data stora
 
 ### Objects (Entity Definitions)
 
-Objects define the structure and schema for your CRM data types. Think of them as "templates" or "blueprints" for creating records.
+Objects define the structure and schema for your data types. Think of them as "templates" or "blueprints" for creating records.
 
 **Default Objects:**
 
@@ -77,7 +77,7 @@ You can also create custom object types (e.g., "Project", "Deal") and define the
 
 ### Records (Entities)
 
-Records are instances of your object definitions - the actual data entries in your CRM.
+Records are instances of your object definitions - the actual data entries in your workspace.
 
 **Example Person Record Response:**
 
@@ -182,4 +182,4 @@ All error responses follow a consistent format:
 - **Activity Feed**: View the complete timeline of changes for any record
 - **Search**: Find records across your entire workspace
 - **Data Enrichment**: Update records with additional information from external sources
-- **AI Context**: Add unstructured context and query your CRM with natural language
+- **AI Context**: Add unstructured context and query your data with natural language
