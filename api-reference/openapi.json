@@ -92,7 +92,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "upsertListMember"
             },
             "post": {
                 "security": [
@@ -140,6 +141,152 @@
                     },
                     "400": {
                         "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "List not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "addListMember"
+            },
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves a list definition by its ID",
+                "tags": [
+                    "Lists"
+                ],
+                "summary": "Get a list by ID",
+                "operationId": "getList",
+                "parameters": [
+                    {
+                        "description": "List ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List definition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ObjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid list ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "List not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Permanently deletes a list definition",
+                "tags": [
+                    "Lists"
+                ],
+                "summary": "Delete a list",
+                "operationId": "deleteList",
+                "parameters": [
+                    {
+                        "description": "List ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List deleted"
+                    },
+                    "400": {
+                        "description": "Bad request",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -266,7 +413,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "getListRecords"
             }
         },
         "/v1/lists/{id}/records/{record_id}": {
@@ -363,6 +511,85 @@
                             }
                         }
                     }
+                },
+                "operationId": "updateListRecord"
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Removes a record from a list without deleting the record itself",
+                "tags": [
+                    "Lists"
+                ],
+                "summary": "Remove a record from a list",
+                "operationId": "removeRecordFromList",
+                "parameters": [
+                    {
+                        "description": "List ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Record ID",
+                        "name": "record_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Record removed from list"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "List or record not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -401,6 +628,73 @@
                     },
                     "400": {
                         "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "listObjects"
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new object definition (entity type) in the workspace",
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "Create an object definition",
+                "operationId": "createObjectDefinition",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateObjectRequest"
+                            }
+                        }
+                    },
+                    "description": "Object definition to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created object definition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ObjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -517,7 +811,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "upsertRecord"
             },
             "post": {
                 "security": [
@@ -603,6 +898,239 @@
                             }
                         }
                     }
+                },
+                "operationId": "createRecord"
+            },
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves a single object definition with all its attribute definitions",
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "Get an object definition",
+                "operationId": "getObjectDefinition",
+                "parameters": [
+                    {
+                        "description": "Object slug (e.g., 'person', 'company')",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Object definition with attributes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ObjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Updates properties of an existing object definition",
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "Update an object definition",
+                "operationId": "updateObjectDefinition",
+                "parameters": [
+                    {
+                        "description": "Object slug (e.g., 'person', 'company')",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.UpdateObjectRequest"
+                            }
+                        }
+                    },
+                    "description": "Fields to update",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated object definition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ObjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Permanently deletes an object definition and all associated data",
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "Delete an object definition",
+                "operationId": "deleteObjectDefinition",
+                "parameters": [
+                    {
+                        "description": "Object slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Object definition deleted"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -650,6 +1178,94 @@
                     },
                     "400": {
                         "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "listObjectLists"
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new list associated with a specific object type",
+                "tags": [
+                    "Lists"
+                ],
+                "summary": "Create a list",
+                "operationId": "createList",
+                "parameters": [
+                    {
+                        "description": "Object slug (e.g., 'person', 'company')",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateListRequest"
+                            }
+                        }
+                    },
+                    "description": "List to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ObjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -776,7 +1392,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "listRecords"
             }
         },
         "/v1/records/{record_id}": {
@@ -853,7 +1470,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "getRecord"
             },
             "patch": {
                 "security": [
@@ -901,6 +1519,76 @@
                     },
                     "400": {
                         "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "updateRecord"
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Permanently deletes a record and all its associated data",
+                "tags": [
+                    "Records"
+                ],
+                "summary": "Delete a record",
+                "operationId": "deleteRecord",
+                "parameters": [
+                    {
+                        "description": "Record ID",
+                        "name": "record_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Record deleted"
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid record ID",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1006,7 +1694,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "addContext"
             }
         },
         "/v1/context/ask": {
@@ -1073,7 +1762,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "queryContext"
             }
         },
         "/v1/context/artifacts/{artifact_id}": {
@@ -1150,7 +1840,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "getArtifact"
             }
         },
         "/v1/context/list/jobs": {
@@ -1217,7 +1908,8 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "createAIListJob"
             }
         },
         "/v1/context/list/jobs/{job_id}": {
@@ -1302,79 +1994,58 @@
                             }
                         }
                     }
-                }
+                },
+                "operationId": "getAIListJob"
             }
         },
-        "/v1/insights": {
-            "get": {
+        "/v1/objects/{slug}/attributes": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Query insights by time window. Supports two modes: (1) duration-based with `last` parameter (e.g., `?last=30m` for insights from the last 30 minutes), or (2) explicit time range with `from` and `to` parameters in RFC3339 UTC format. If neither is specified, returns the most recent insights.",
+                "description": "Creates a new attribute definition on an object type",
                 "tags": [
-                    "Insights"
+                    "Schema"
                 ],
-                "summary": "Get insights",
+                "summary": "Create an attribute definition",
+                "operationId": "createAttributeDefinition",
                 "parameters": [
                     {
-                        "description": "Duration window for recent insights (e.g., 30m, 2h, 1h30m). Cannot be combined with `from`/`to`.",
-                        "name": "last",
-                        "in": "query",
-                        "required": false,
+                        "description": "Object slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "30m"
-                    },
-                    {
-                        "description": "Start of time range in RFC3339 UTC format. Must be used with `to`.",
-                        "name": "from",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "example": "2026-02-07T00:00:00Z"
-                    },
-                    {
-                        "description": "End of time range in RFC3339 UTC format. Must be used with `from`.",
-                        "name": "to",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "example": "2026-02-08T00:00:00Z"
-                    },
-                    {
-                        "description": "Maximum number of insights to return (default: 20, max: 100)",
-                        "name": "limit",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 20,
-                            "maximum": 100
                         }
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateAttributeDefinitionRequest"
+                            }
+                        }
+                    },
+                    "description": "Attribute definition to create",
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "Enriched insights with workspace context, entity signals, and evidence",
+                        "description": "Created attribute definition",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/insights.InsightBatchPayload"
+                                    "$ref": "#/components/schemas/developer.AttributeDefinitionResponse"
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "Bad request - Invalid query parameters",
+                        "description": "Bad request - Invalid data",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1393,8 +2064,18 @@
                             }
                         }
                     },
-                    "403": {
-                        "description": "Forbidden - API key missing `insight.stream` scope",
+                    "404": {
+                        "description": "Object not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1406,26 +2087,67 @@
                 }
             }
         },
-        "/v1/insights/stream": {
-            "get": {
+        "/v1/objects/{slug}/attributes/{attr_id}": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Establish a Server-Sent Events (SSE) connection to receive real-time insight notifications. On connection, recent insights are replayed as `insight.replay` events. New insights arrive as `insight.batch.created` events. Keepalive comments are sent every 30 seconds.",
+                "description": "Updates properties of an existing attribute definition",
                 "tags": [
-                    "Insights"
+                    "Schema"
                 ],
-                "summary": "Stream insights (SSE)",
+                "summary": "Update an attribute definition",
+                "operationId": "updateAttributeDefinition",
+                "parameters": [
+                    {
+                        "description": "Object slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Attribute definition ID",
+                        "name": "attr_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.UpdateAttributeDefinitionRequest"
+                            }
+                        }
+                    },
+                    "description": "Fields to update",
+                    "required": true
+                },
                 "responses": {
                     "200": {
-                        "description": "SSE stream established. Events are sent as `event: <type>\\ndata: <json>\\n\\n`.",
+                        "description": "Updated attribute definition",
                         "content": {
-                            "text/event-stream": {
+                            "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "description": "SSE event stream. Event types: `insight.batch.created` (real-time), `insight.replay` (historical replay on connect)."
+                                    "$ref": "#/components/schemas/developer.AttributeDefinitionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
                                 }
                             }
                         }
@@ -1440,8 +2162,1385 @@
                             }
                         }
                     },
-                    "403": {
-                        "description": "Forbidden - API key missing `insight.stream` scope",
+                    "404": {
+                        "description": "Object or attribute not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Permanently deletes an attribute definition from an object type",
+                "tags": [
+                    "Schema"
+                ],
+                "summary": "Delete an attribute definition",
+                "operationId": "deleteAttributeDefinition",
+                "parameters": [
+                    {
+                        "description": "Object slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Attribute definition ID",
+                        "name": "attr_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attribute definition deleted"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Object or attribute not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/relationships": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new relationship definition between two object types",
+                "tags": [
+                    "Relationships"
+                ],
+                "summary": "Create a relationship definition",
+                "operationId": "createRelationshipDefinition",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateRelationshipDefinitionRequest"
+                            }
+                        }
+                    },
+                    "description": "Relationship definition to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created relationship definition",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.RelationshipDefinitionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves all relationship definitions in the workspace",
+                "tags": [
+                    "Relationships"
+                ],
+                "summary": "List relationship definitions",
+                "operationId": "listRelationshipDefinitions",
+                "responses": {
+                    "200": {
+                        "description": "List of relationship definitions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ListRelationshipDefinitionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/relationships/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Permanently deletes a relationship definition",
+                "tags": [
+                    "Relationships"
+                ],
+                "summary": "Delete a relationship definition",
+                "operationId": "deleteRelationshipDefinition",
+                "parameters": [
+                    {
+                        "description": "Relationship definition ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relationship definition deleted"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Relationship definition not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/records/{record_id}/relationships": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a relationship instance between two records",
+                "tags": [
+                    "Relationships"
+                ],
+                "summary": "Create a relationship instance",
+                "operationId": "createRelationshipInstance",
+                "parameters": [
+                    {
+                        "description": "Record ID",
+                        "name": "record_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateRelationshipRequest"
+                            }
+                        }
+                    },
+                    "description": "Relationship instance to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created relationship instance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.RelationshipInstanceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/records/{record_id}/relationships/{rel_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Deletes a relationship instance between two records",
+                "tags": [
+                    "Relationships"
+                ],
+                "summary": "Delete a relationship instance",
+                "operationId": "deleteRelationshipInstance",
+                "parameters": [
+                    {
+                        "description": "Record ID",
+                        "name": "record_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Relationship instance ID",
+                        "name": "rel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Relationship instance deleted"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Relationship instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/records/{record_id}/timeline": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves the activity timeline for a specific record, including tasks, notes, attribute changes, and relationship events. Supports cursor-based pagination.",
+                "tags": [
+                    "Timeline"
+                ],
+                "summary": "Get record timeline",
+                "operationId": "getRecordTimeline",
+                "parameters": [
+                    {
+                        "description": "Record ID",
+                        "name": "record_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Max events to return (1-100, default: 50)",
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Pagination cursor from previous response",
+                        "name": "cursor",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Timeline events",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.TimelineResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Record not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tasks": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new task, optionally associated with records and assignees",
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create a task",
+                "operationId": "createTask",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateTaskRequest"
+                            }
+                        }
+                    },
+                    "description": "Task to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created task",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.TaskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves tasks with optional filtering by entity, assignee, completion status, and search query. Supports offset-based pagination.",
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "List tasks",
+                "operationId": "listTasks",
+                "parameters": [
+                    {
+                        "description": "Filter by associated record ID",
+                        "name": "entity_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by assignee user ID",
+                        "name": "assignee_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Search task titles",
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter by completion status (true/false)",
+                        "name": "is_completed",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Max results (1-500, default: 100)",
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Pagination offset (default: 0)",
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ListTasksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/tasks/{task_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves a single task by ID",
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get a task",
+                "operationId": "getTask",
+                "parameters": [
+                    {
+                        "description": "Task ID",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.TaskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid task ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Updates properties of an existing task. All fields are optional — only provided fields are updated.",
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update a task",
+                "operationId": "updateTask",
+                "parameters": [
+                    {
+                        "description": "Task ID",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.UpdateTaskRequest"
+                            }
+                        }
+                    },
+                    "description": "Fields to update",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated task",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.TaskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Archives (soft-deletes) a task. The task will have an archived_at timestamp set.",
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete a task",
+                "operationId": "deleteTask",
+                "parameters": [
+                    {
+                        "description": "Task ID",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task archived"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Task not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notes": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new note, optionally associated with a record",
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create a note",
+                "operationId": "createNote",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateNoteRequest"
+                            }
+                        }
+                    },
+                    "description": "Note to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created note",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NoteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves notes with optional filtering by associated record. Response capped at 200 notes.",
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "List notes",
+                "operationId": "listNotes",
+                "parameters": [
+                    {
+                        "description": "Filter by associated record ID",
+                        "name": "entity_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of notes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ListNotesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notes/{note_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves a single note by ID",
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get a note",
+                "operationId": "getNote",
+                "parameters": [
+                    {
+                        "description": "Note ID",
+                        "name": "note_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NoteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid note ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Updates properties of an existing note. All fields are optional.",
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update a note",
+                "operationId": "updateNote",
+                "parameters": [
+                    {
+                        "description": "Note ID",
+                        "name": "note_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.UpdateNoteRequest"
+                            }
+                        }
+                    },
+                    "description": "Fields to update",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated note",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NoteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Archives (soft-deletes) a note. The note will have an archived_at timestamp set.",
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete a note",
+                "operationId": "deleteNote",
+                "parameters": [
+                    {
+                        "description": "Note ID",
+                        "name": "note_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note archived"
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Note not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/search": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Search across all records in the workspace. Results are grouped by object type (e.g., person, company). Partial results are returned if some search types fail.",
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search records",
+                "operationId": "searchRecords",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.SearchRequest"
+                            }
+                        }
+                    },
+                    "description": "Search query",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Search results grouped by type",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.SearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2459,7 +4558,7 @@
                     "answer": "Based on the available context, techflow.io appears to be a technology company. Marcus Rodriguez from techflow.io expressed interest in booking a demo on LinkedIn.",
                     "entities_considered": [
                         {
-                            "id": 25339323448557882,
+                            "id": 25339323448557880,
                             "name": "TechFlow",
                             "type": "COMPANY",
                             "reason": "Direct match for techflow.io domain",
@@ -2467,7 +4566,7 @@
                             "score": 0.95
                         },
                         {
-                            "id": 25339323448557883,
+                            "id": 25339323448557884,
                             "name": "Marcus Rodriguez",
                             "type": "PERSON",
                             "reason": "Associated with TechFlow, recent LinkedIn activity",
@@ -2477,15 +4576,15 @@
                     ],
                     "signals_used": [
                         {
-                            "insight_id": 38485049540083714,
-                            "entity_id": 25339323448557883,
+                            "insight_id": 38485049540083710,
+                            "entity_id": 25339323448557884,
                             "content": "Marcus Rodriguez commented on LinkedIn: Would love to book a demo",
                             "score": 0.92,
                             "type": "social_activity"
                         },
                         {
-                            "insight_id": 38485049540083715,
-                            "entity_id": 25339323448557882,
+                            "insight_id": 38485049540083710,
+                            "entity_id": 25339323448557880,
                             "content": "TechFlow is a SaaS platform for workflow automation",
                             "score": 0.88,
                             "type": "company_info"
@@ -2507,7 +4606,7 @@
                     }
                 },
                 "example": {
-                    "artifact_id": 32710180831586561
+                    "artifact_id": 32710180831586560
                 }
             },
             "developer.GetArtifactResponse": {
@@ -2609,8 +4708,8 @@
                         "entities_extracted": [
                             {
                                 "type": "COMPANY",
-                                "context_id": 38485049540083714,
-                                "canonical_entity_id": 25339323448557882,
+                                "context_id": 38485049540083710,
+                                "canonical_entity_id": 25339323448557880,
                                 "properties": {
                                     "name": "Adobe",
                                     "domain": "adobe.com"
@@ -2623,8 +4722,8 @@
                             },
                             {
                                 "type": "PERSON",
-                                "context_id": 38485049540083715,
-                                "canonical_entity_id": 25339323448557883,
+                                "context_id": 38485049540083710,
+                                "canonical_entity_id": 25339323448557884,
                                 "properties": {
                                     "name": "John Smith",
                                     "email": "john.smith@adobe.com",
@@ -2816,110 +4915,698 @@
                     }
                 }
             },
-            "insights.InsightBatchPayload": {
+            "developer.CreateObjectRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Display name for the object"
+                    },
+                    "name_plural": {
+                        "type": "string",
+                        "description": "Plural display name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe identifier"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description of the object type"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Object type",
+                        "enum": [
+                            "person",
+                            "company",
+                            "custom",
+                            "deal"
+                        ]
+                    }
+                },
+                "example": {
+                    "name": "Project",
+                    "name_plural": "Projects",
+                    "slug": "project",
+                    "description": "Project tracker",
+                    "type": "custom"
+                }
+            },
+            "developer.UpdateObjectRequest": {
                 "type": "object",
                 "properties": {
-                    "workspace": {
-                        "type": "object",
-                        "description": "Workspace context",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "slug": {
-                                "type": "string"
-                            },
-                            "business_info": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "domain": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "settings": {
-                                "type": "object"
-                            }
-                        }
-                    },
-                    "insights": {
-                        "type": "array",
-                        "description": "List of enriched insights",
-                        "items": {
-                            "$ref": "#/components/schemas/insights.EnrichedInsight"
-                        }
-                    },
-                    "operation_id": {
-                        "type": "integer",
-                        "description": "Source operation ID"
-                    },
-                    "insight_count": {
-                        "type": "integer",
-                        "description": "Number of insights in this batch"
-                    },
-                    "emitted_at": {
+                    "name": {
                         "type": "string",
-                        "format": "date-time",
-                        "description": "When this batch was emitted"
+                        "description": "New display name"
+                    },
+                    "name_plural": {
+                        "type": "string",
+                        "description": "New plural name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "New description"
+                    }
+                },
+                "example": {
+                    "name": "Updated Project",
+                    "description": "Updated description"
+                }
+            },
+            "developer.CreateAttributeDefinitionRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "slug",
+                    "type"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Display name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe identifier"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Attribute value type",
+                        "enum": [
+                            "text",
+                            "number",
+                            "email",
+                            "phone",
+                            "url",
+                            "date",
+                            "boolean",
+                            "currency",
+                            "location",
+                            "select",
+                            "social_profile",
+                            "domain",
+                            "full_name"
+                        ]
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description"
+                    },
+                    "options": {
+                        "$ref": "#/components/schemas/developer.CreateAttributeOptionsRequest"
+                    }
+                },
+                "example": {
+                    "name": "Status",
+                    "slug": "status",
+                    "type": "select",
+                    "description": "Current status",
+                    "options": {
+                        "is_required": true,
+                        "select_options": [
+                            {
+                                "name": "Open"
+                            },
+                            {
+                                "name": "In Progress"
+                            },
+                            {
+                                "name": "Done"
+                            }
+                        ]
                     }
                 }
             },
-            "insights.EnrichedInsight": {
+            "developer.CreateAttributeOptionsRequest": {
                 "type": "object",
+                "properties": {
+                    "is_required": {
+                        "type": "boolean",
+                        "description": "Field is required"
+                    },
+                    "is_unique": {
+                        "type": "boolean",
+                        "description": "Value must be unique"
+                    },
+                    "is_multi_value": {
+                        "type": "boolean",
+                        "description": "Allow multiple values"
+                    },
+                    "use_raw_format": {
+                        "type": "boolean",
+                        "description": "Store raw format (numbers)"
+                    },
+                    "is_whole_number": {
+                        "type": "boolean",
+                        "description": "Number must be integer"
+                    },
+                    "select_options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.CreateSelectOptionRequest"
+                        },
+                        "description": "Predefined choices for select fields"
+                    }
+                }
+            },
+            "developer.CreateSelectOptionRequest": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Option ID (optional on create, auto-generated if omitted)"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Option display label"
+                    }
+                }
+            },
+            "developer.UpdateAttributeDefinitionRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "New display name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "New description"
+                    },
+                    "options": {
+                        "$ref": "#/components/schemas/developer.UpdateAttributeOptionsRequest"
+                    }
+                },
+                "example": {
+                    "name": "Updated Status",
+                    "options": {
+                        "is_required": false,
+                        "select_options": [
+                            {
+                                "id": "existing-id",
+                                "name": "Renamed"
+                            },
+                            {
+                                "name": "New Option"
+                            }
+                        ]
+                    }
+                }
+            },
+            "developer.UpdateAttributeOptionsRequest": {
+                "type": "object",
+                "properties": {
+                    "is_required": {
+                        "type": "boolean"
+                    },
+                    "use_raw_format": {
+                        "type": "boolean"
+                    },
+                    "is_whole_number": {
+                        "type": "boolean"
+                    },
+                    "select_options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.CreateSelectOptionRequest"
+                        },
+                        "description": "Updated select options. Include id to update existing, omit id to create new."
+                    }
+                }
+            },
+            "developer.CreateRelationshipDefinitionRequest": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "entity_definition_1_id",
+                    "entity_definition_2_id"
+                ],
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "Insight type",
+                        "description": "Relationship cardinality",
                         "enum": [
-                            "opportunity",
-                            "risk",
-                            "relationship",
-                            "preference",
-                            "milestone",
-                            "goal",
-                            "pain_point",
-                            "commitment",
-                            "constraint",
-                            "requirement"
+                            "one_to_one",
+                            "one_to_many",
+                            "many_to_many"
                         ]
                     },
-                    "type_description": {
+                    "entity_definition_1_id": {
                         "type": "string",
-                        "description": "Human-readable description of the insight type"
+                        "description": "First object definition ID"
                     },
-                    "content": {
+                    "entity_definition_2_id": {
                         "type": "string",
-                        "description": "The insight content"
+                        "description": "Second object definition ID"
                     },
-                    "confidence": {
-                        "type": "number",
-                        "format": "float",
-                        "description": "Confidence score (0-1)"
+                    "entity_1_to_2_predicate": {
+                        "type": "string",
+                        "description": "Label for 1→2 direction (e.g., 'has')"
                     },
-                    "confidence_level": {
+                    "entity_2_to_1_predicate": {
+                        "type": "string",
+                        "description": "Label for 2→1 direction (e.g., 'belongs to')"
+                    }
+                },
+                "example": {
+                    "type": "one_to_many",
+                    "entity_definition_1_id": "123",
+                    "entity_definition_2_id": "456",
+                    "entity_1_to_2_predicate": "has",
+                    "entity_2_to_1_predicate": "belongs to"
+                }
+            },
+            "developer.RelationshipDefinitionResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
                         "type": "string",
                         "enum": [
+                            "one_to_one",
+                            "one_to_many",
+                            "many_to_many"
+                        ]
+                    },
+                    "entity_definition_1_id": {
+                        "type": "string"
+                    },
+                    "entity_definition_2_id": {
+                        "type": "string"
+                    },
+                    "entity_1_to_2_predicate": {
+                        "type": "string"
+                    },
+                    "entity_2_to_1_predicate": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "example": {
+                    "id": "789",
+                    "type": "one_to_many",
+                    "entity_definition_1_id": "123",
+                    "entity_definition_2_id": "456",
+                    "entity_1_to_2_predicate": "has",
+                    "entity_2_to_1_predicate": "belongs to",
+                    "created_at": "2024-01-15T10:00:00Z"
+                }
+            },
+            "developer.ListRelationshipDefinitionsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.RelationshipDefinitionResponse"
+                        }
+                    }
+                }
+            },
+            "developer.CreateRelationshipRequest": {
+                "type": "object",
+                "required": [
+                    "definition_id",
+                    "entity_1_id",
+                    "entity_2_id"
+                ],
+                "properties": {
+                    "definition_id": {
+                        "type": "string",
+                        "description": "Relationship definition ID"
+                    },
+                    "entity_1_id": {
+                        "type": "string",
+                        "description": "First record ID"
+                    },
+                    "entity_2_id": {
+                        "type": "string",
+                        "description": "Second record ID"
+                    }
+                },
+                "example": {
+                    "definition_id": "789",
+                    "entity_1_id": "1001",
+                    "entity_2_id": "2002"
+                }
+            },
+            "developer.RelationshipInstanceResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "definition_id": {
+                        "type": "string"
+                    },
+                    "entity_1_id": {
+                        "type": "string"
+                    },
+                    "entity_2_id": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "example": {
+                    "id": "5001",
+                    "definition_id": "789",
+                    "entity_1_id": "1001",
+                    "entity_2_id": "2002",
+                    "created_at": "2024-01-15T10:00:00Z"
+                }
+            },
+            "developer.CreateListRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "List display name"
+                    },
+                    "name_plural": {
+                        "type": "string",
+                        "description": "Plural name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-safe identifier"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "List description"
+                    }
+                },
+                "example": {
+                    "name": "VIP Contacts",
+                    "slug": "vip-contacts",
+                    "description": "High-value contacts"
+                }
+            },
+            "developer.CreateTaskRequest": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Task title (non-empty)"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Task description"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "description": "Task priority",
+                        "enum": [
+                            "unspecified",
                             "low",
                             "medium",
                             "high",
-                            "very_high"
-                        ],
-                        "description": "Human-readable confidence level"
+                            "urgent"
+                        ]
                     },
-                    "valid_from": {
+                    "due_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Due date (RFC3339)"
+                    },
+                    "entity_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Associated record IDs"
+                    },
+                    "assignee_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Assigned user IDs"
+                    }
+                },
+                "example": {
+                    "title": "Follow up with client",
+                    "description": "Discuss contract renewal",
+                    "priority": "high",
+                    "due_date": "2026-03-01T09:00:00Z",
+                    "entity_ids": [
+                        "1001",
+                        "1002"
+                    ],
+                    "assignee_ids": [
+                        "50"
+                    ]
+                }
+            },
+            "developer.UpdateTaskRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "New title (cannot be empty)"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "New description (empty string clears it)"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "description": "New priority (empty string clears it)",
+                        "enum": [
+                            "unspecified",
+                            "low",
+                            "medium",
+                            "high",
+                            "urgent",
+                            ""
+                        ]
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "New due date"
+                    },
+                    "is_completed": {
+                        "type": "boolean",
+                        "description": "Mark complete/incomplete"
+                    },
+                    "entity_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Replace associated records"
+                    },
+                    "assignee_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Replace assignees"
+                    }
+                },
+                "example": {
+                    "title": "Updated title",
+                    "priority": "urgent",
+                    "is_completed": true,
+                    "entity_ids": [
+                        "1001"
+                    ],
+                    "assignee_ids": [
+                        "50",
+                        "51"
+                    ]
+                }
+            },
+            "developer.TaskResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "priority": {
+                        "type": "string"
+                    },
+                    "due_date": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "valid_until": {
+                    "is_completed": {
+                        "type": "boolean"
+                    },
+                    "completed_at": {
                         "type": "string",
-                        "format": "date-time",
-                        "nullable": true
+                        "format": "date-time"
+                    },
+                    "assignee_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "entity_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_by_id": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "archived_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "example": {
+                    "id": "800",
+                    "title": "Follow up with client",
+                    "description": "Discuss contract renewal",
+                    "priority": "high",
+                    "due_date": "2026-03-01T09:00:00Z",
+                    "is_completed": false,
+                    "assignee_ids": [
+                        "50"
+                    ],
+                    "entity_ids": [
+                        "1001",
+                        "1002"
+                    ],
+                    "created_by": "developer_api",
+                    "created_by_id": "42",
+                    "created_at": "2024-01-15T10:00:00Z"
+                }
+            },
+            "developer.ListTasksResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.TaskResponse"
+                        }
+                    },
+                    "has_more": {
+                        "type": "boolean"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "next_offset": {
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "data": [
+                        {
+                            "id": "800",
+                            "title": "Follow up with client",
+                            "priority": "high",
+                            "is_completed": false,
+                            "created_by": "developer_api",
+                            "created_at": "2024-01-15T10:00:00Z"
+                        }
+                    ],
+                    "has_more": true,
+                    "total": 47,
+                    "next_offset": 20
+                }
+            },
+            "developer.CreateNoteRequest": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Note title (non-empty)"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Note body text"
+                    },
+                    "entity_id": {
+                        "type": "string",
+                        "description": "Associated record ID"
+                    }
+                },
+                "example": {
+                    "title": "Meeting notes",
+                    "content": "Discussed Q3 roadmap...",
+                    "entity_id": "1001"
+                }
+            },
+            "developer.UpdateNoteRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "New title"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "New content"
+                    },
+                    "entity_id": {
+                        "type": "string",
+                        "description": "Change associated record"
+                    }
+                },
+                "example": {
+                    "title": "Updated meeting notes",
+                    "content": "Added action items..."
+                }
+            },
+            "developer.NoteResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "entity_id": {
+                        "type": "string"
                     },
                     "created_by": {
                         "type": "string"
@@ -2928,104 +5615,333 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "target": {
+                    "archived_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "example": {
+                    "id": "900",
+                    "title": "Meeting notes",
+                    "content": "Discussed Q3 roadmap...",
+                    "entity_id": "1001",
+                    "created_by": "developer_api",
+                    "created_at": "2024-01-15T10:00:00Z"
+                }
+            },
+            "developer.ListNotesResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.NoteResponse"
+                        }
+                    }
+                }
+            },
+            "developer.TimelineResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.TimelineEventResponse"
+                        }
+                    },
+                    "has_next_page": {
+                        "type": "boolean"
+                    },
+                    "next_cursor": {
+                        "type": "string"
+                    }
+                }
+            },
+            "developer.TimelineEventResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "resource_type": {
+                        "type": "string",
+                        "description": "Type of resource",
+                        "enum": [
+                            "entity",
+                            "task",
+                            "note",
+                            "list_item",
+                            "attribute"
+                        ]
+                    },
+                    "resource_id": {
+                        "type": "string"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "description": "Type of event",
+                        "enum": [
+                            "created",
+                            "updated",
+                            "deleted",
+                            "archived"
+                        ]
+                    },
+                    "event_payload": {
+                        "$ref": "#/components/schemas/developer.TimelineEventPayloadResponse"
+                    },
+                    "event_timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_by_id": {
+                        "type": "string"
+                    },
+                    "is_aggregated": {
+                        "type": "boolean"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.TimelineEventResponse"
+                        }
+                    }
+                },
+                "example": {
+                    "id": "5000",
+                    "resource_type": "task",
+                    "resource_id": "800",
+                    "event_type": "created",
+                    "event_payload": {
+                        "task": {
+                            "id": "800",
+                            "title": "Follow up",
+                            "priority": "high"
+                        }
+                    },
+                    "event_timestamp": "2024-01-15T10:00:00Z",
+                    "created_by": "developer_api",
+                    "created_by_id": "42",
+                    "is_aggregated": false,
+                    "children": []
+                }
+            },
+            "developer.TimelineEventPayloadResponse": {
+                "type": "object",
+                "description": "Only the relevant field is populated based on resource_type",
+                "properties": {
+                    "task": {
+                        "$ref": "#/components/schemas/developer.TimelineTaskPayload"
+                    },
+                    "note": {
+                        "$ref": "#/components/schemas/developer.TimelineNotePayload"
+                    },
+                    "entity": {
+                        "$ref": "#/components/schemas/developer.TimelineEntityPayload"
+                    },
+                    "list_item": {
+                        "$ref": "#/components/schemas/developer.TimelineListItemPayload"
+                    },
+                    "attribute": {
+                        "$ref": "#/components/schemas/developer.TimelineAttributePayload"
+                    },
+                    "field_changes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.FieldChangeResponse"
+                        }
+                    }
+                }
+            },
+            "developer.TimelineTaskPayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "priority": {
+                        "type": "string"
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "developer.TimelineNotePayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                }
+            },
+            "developer.TimelineEntityPayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "definition_id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "attributes": {
                         "type": "object",
-                        "description": "The entity this insight is about",
-                        "properties": {
-                            "type": {
-                                "type": "string"
-                            },
-                            "type_description": {
-                                "type": "string"
-                            },
-                            "entity_type": {
-                                "type": "string"
-                            },
-                            "entity_type_description": {
-                                "type": "string"
-                            },
-                            "hint": {
-                                "type": "string",
-                                "description": "Best-guess display name for the entity"
-                            },
-                            "signals": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string"
-                                        },
-                                        "type_description": {
-                                            "type": "string"
-                                        },
-                                        "value": {
-                                            "type": "string"
-                                        },
-                                        "confidence": {
-                                            "type": "number"
-                                        },
-                                        "observation_count": {
-                                            "type": "integer"
-                                        },
-                                        "last_observed_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    }
-                                }
-                            },
-                            "anchors": {
-                                "type": "object"
-                            },
-                            "anchors_description": {
-                                "type": "string"
+                        "additionalProperties": {}
+                    }
+                }
+            },
+            "developer.TimelineListItemPayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "definition_id": {
+                        "type": "string"
+                    },
+                    "list_name": {
+                        "type": "string"
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "developer.TimelineAttributePayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "definition_id": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {},
+                    "plain_text": {
+                        "type": "string"
+                    }
+                }
+            },
+            "developer.FieldChangeResponse": {
+                "type": "object",
+                "properties": {
+                    "field_name": {
+                        "type": "string"
+                    },
+                    "old_value": {},
+                    "new_value": {}
+                }
+            },
+            "developer.SearchRequest": {
+                "type": "object",
+                "required": [
+                    "query"
+                ],
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query (1-500 characters)"
+                    }
+                },
+                "example": {
+                    "query": "john doe"
+                }
+            },
+            "developer.SearchResponse": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "object",
+                        "description": "Results grouped by object type (e.g., 'person', 'company')",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/developer.SearchResultResponse"
                             }
                         }
                     },
-                    "evidence": {
+                    "errored_search_types": {
                         "type": "array",
-                        "description": "Supporting evidence for this insight",
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "excerpt": {
-                                    "type": "string",
-                                    "description": "The specific text that supports this insight"
-                                },
-                                "excerpt_description": {
-                                    "type": "string"
-                                },
-                                "artifact": {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string"
-                                        },
-                                        "type_description": {
-                                            "type": "string"
-                                        },
-                                        "occurred_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "subject": {
-                                            "type": "string"
-                                        },
-                                        "content": {
-                                            "type": "string"
-                                        },
-                                        "created_by": {
-                                            "type": "string"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    }
-                                }
+                            "type": "string"
+                        },
+                        "description": "Search types that encountered errors (partial results returned)"
+                    }
+                },
+                "example": {
+                    "results": {
+                        "person": [
+                            {
+                                "id": "1001",
+                                "primary_value": "John Doe",
+                                "matched_value": "John Doe",
+                                "score": 0.95,
+                                "entity_definition_id": "10"
                             }
-                        }
+                        ],
+                        "company": [
+                            {
+                                "id": "2001",
+                                "primary_value": "Doe Industries",
+                                "matched_value": "Doe Industries",
+                                "score": 0.72,
+                                "entity_definition_id": "11"
+                            }
+                        ]
+                    },
+                    "errored_search_types": []
+                }
+            },
+            "developer.SearchResultResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "primary_value": {
+                        "type": "string",
+                        "description": "Primary display value of the record"
+                    },
+                    "matched_value": {
+                        "type": "string",
+                        "description": "Value that matched the search query"
+                    },
+                    "score": {
+                        "type": "number",
+                        "description": "Relevance score"
+                    },
+                    "entity_definition_id": {
+                        "type": "string",
+                        "description": "Object definition ID"
                     }
                 }
             }

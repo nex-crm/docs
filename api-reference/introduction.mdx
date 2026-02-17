@@ -31,6 +31,27 @@ All API requests should be made to:
 https://app.nex.ai/api/developers
 ```
 
+## Scopes
+
+Each API key has specific scopes that control what operations it can perform. Request the scopes you need when generating your API key.
+
+| Scope | Description |
+|-------|-------------|
+| `object.read` | Read object definitions and their attributes |
+| `object.write` | Create, update, and delete object definitions, attributes, and lists |
+| `record.read` | Read records, search, and view timelines |
+| `record.write` | Create, update, and delete records and list memberships |
+| `list.read` | Read list definitions |
+| `list.member.read` | Read list members and records |
+| `list.member.write` | Add, update, and remove list members |
+| `relationship.read` | Read relationship definitions |
+| `relationship.write` | Create and delete relationship definitions and instances |
+| `task.read` | Read tasks |
+| `task.write` | Create, update, and delete tasks |
+| `note.read` | Read notes |
+| `note.write` | Create, update, and delete notes |
+| `insight.stream` | SSE insight streaming |
+
 ## Data Model Overview
 
 Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data storage for different types of CRM records. This architecture allows you to:
@@ -38,6 +59,8 @@ Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data stora
 - Define custom object types (entity definitions) with their own attributes
 - Create records (entities) that conform to these definitions
 - Store attribute values that can be of various types (text, email, relationships, etc.)
+- Define relationships between object types
+- Track activity with tasks, notes, and timeline events
 
 ## Core Resources
 
@@ -50,45 +73,7 @@ Objects define the structure and schema for your CRM data types. Think of them a
 - **Person**: Individual contacts with attributes like name, email, job title, company relationships
 - **Company**: Organization records with attributes like name, domain, industry, team relationships
 
-**Example Person Object Response:**
-
-```json
-{
-  "id": "123",
-  "slug": "person",
-  "name": "Person",
-  "name_plural": "People",
-  "type": "person",
-  "description": "",
-  "created_at": "2024-01-15T10:00:00Z",
-  "attributes": [
-    {
-      "id": "456",
-      "slug": "name",
-      "type": "full_name",
-      "name": "Name",
-      "description": "",
-      "options": {
-        "is_multi_value": false,
-        "is_required": true,
-        "is_unique": false
-      }
-    },
-    {
-      "id": "789",
-      "slug": "email_addresses",
-      "type": "email",
-      "name": "Email Addresses",
-      "description": "",
-      "options": {
-        "is_multi_value": true,
-        "is_required": false,
-        "is_unique": true
-      }
-    }
-  ]
-}
-```
+You can also create custom object types (e.g., "Project", "Deal") and define their attributes via the Schema endpoints.
 
 ### Records (Entities)
 
@@ -112,111 +97,89 @@ Records are instances of your object definitions - the actual data entries in yo
 }
 ```
 
-**Example Create Record Request (Simple Format):**
+> **Note**: For many attribute types like `full_name`, `phone`, and `location`, you can use either simple string values (e.g., `"John Smith"`) or structured objects (e.g., `{"first_name": "John", "last_name": "Smith"}`). The API accepts both formats.
 
-```json
-{
-  "attributes": {
-    "name": "Jane Doe",
-    "email_addresses": ["jane@company.com"],
-    "job_title": "Product Manager",
-    "phone_number": "+1-555-123-4567",
-    "location": "Boston, MA"
-  }
-}
-```
+### Relationships
 
-**Example Create Record Request (Structured Format):**
+Relationships define how object types relate to each other (e.g., Person → Company). You can create relationship definitions between any two object types, then create instances linking specific records.
 
-```json
-{
-  "attributes": {
-    "name": {
-      "first_name": "Jane",
-      "last_name": "Doe"
-    },
-    "email_addresses": ["jane@company.com"],
-    "job_title": "Product Manager",
-    "phone_number": {
-      "country_code": 1,
-      "number": "5551234567"
-    },
-    "location": {
-      "street": "123 Main St",
-      "city": "Boston",
-      "region": "MA",
-      "postal_code": "02134",
-      "country": "US"
-    }
-  }
-}
-```
-
-> **Note**: For many attribute types like `full_name`, `phone`, and `location`, you can use either simple string values (e.g., `"John Smith"`) or structured objects (e.g., `{"first_name": "John", "last_name": "Smith"}`). The API accepts both formats - use whichever is more convenient for your application.
+**Relationship types:** `one_to_one`, `one_to_many`, `many_to_many`
 
 ### Lists
 
-Lists allow you to organize and group records for campaigns, segments, or any custom categorization. Lists are associated with specific object types (e.g., person lists, company lists).
+Lists allow you to organize and group records for campaigns, segments, or any custom categorization. Lists are associated with specific object types.
 
-## Attribute Options
+### Tasks
 
-Each attribute definition includes options that control its behavior:
+Tasks are actionable items that can be associated with records and assigned to users. Tasks support priorities (`low`, `medium`, `high`, `urgent`), due dates, and completion tracking. Deleting a task archives it (soft delete).
 
-**Common Options:**
+### Notes
 
-- `is_multi_value`: Allow multiple values (e.g., multiple email addresses)
-- `is_required`: Field must be provided when creating records
-- `is_unique`: Values must be unique across all records of this type
+Notes are free-form text entries that can be associated with records. Deleting a note archives it (soft delete).
 
-**Type-Specific Options:**
+### Timeline
 
-- **Select fields**: Include `select_options` array with predefined choices
-- **Number fields**: `is_whole_number` and `use_raw_format` for formatting
-- **Social profiles**: `social_platform` specifies the platform (LinkedIn, Twitter/X)
+The timeline provides a chronological activity feed for any record, including tasks, notes, attribute changes, and relationship events. Supports cursor-based pagination.
 
-**Example Company Record with Multi-Value Attributes:**
+### Search
+
+Full-text search across all records in the workspace. Results are grouped by object type and include relevance scores.
+
+## Attribute Types
+
+When creating attributes via the Schema endpoints, the following types are supported:
+
+| Type | Description |
+|------|-------------|
+| `text` | Free-form text |
+| `number` | Numeric values (integer or decimal) |
+| `email` | Email addresses |
+| `phone` | Phone numbers |
+| `url` | URLs |
+| `date` | Dates |
+| `boolean` | True/false values |
+| `currency` | Currency amounts |
+| `location` | Physical addresses |
+| `select` | Predefined options (single or multi-select) |
+| `social_profile` | Social media profiles |
+| `domain` | Web domains |
+| `full_name` | Structured names (first/last) |
+
+## Pagination
+
+The API uses two pagination styles:
+
+- **Offset-based**: Used by records, tasks, and list records. Responses include `total`, `limit`, `offset`, and `has_more`/`next_offset` fields.
+- **Cursor-based**: Used by timeline. Responses include `has_next_page` and `next_cursor` fields.
+
+## Error Handling
+
+All error responses follow a consistent format:
 
 ```json
 {
-  "id": "12345",
-  "object_id": "456",
-  "type": "company",
-  "workspace_id": "789",
-  "created_at": "2024-01-15T14:20:00Z",
-  "updated_at": "2024-01-20T09:15:00Z",
-  "attributes": {
-    "name": "TechCorp Inc",
-    "domains": ["techcorp.com", "techcorp.io"],
-    "industries": ["Technology", "SaaS"],
-    "size": 250,
-    "founding_year": 2018,
-    "description": "Leading provider of enterprise software solutions",
-    "location": "Austin, TX"
-  }
+  "code": 400,
+  "message": "Description of what went wrong"
 }
 ```
 
-**Example List Records Request:**
-
-```json
-{
-  "attributes": {
-    "mode": "custom",
-    "slugs": ["name", "email_addresses", "job_title", "company"]
-  },
-  "limit": 25,
-  "offset": 0,
-  "sort": {
-    "attribute": "name",
-    "direction": "asc"
-  }
-}
-```
+| Status Code | Description |
+|-------------|-------------|
+| `400` | Bad request - Invalid input data |
+| `401` | Unauthorized - Invalid or missing API key |
+| `404` | Not found - Resource doesn't exist |
+| `429` | Too many requests - Rate limit exceeded |
+| `500` | Internal server error |
 
 ## Common Use Cases
 
 - **Contact Management**: Create and update person and company records
+- **Schema Customization**: Define custom object types and attributes
 - **Relationship Mapping**: Link people to companies and track team structures
-- **List Management**: Organize contacts into targeted lists
-- **Custom Fields**: Add custom attributes to default object types
+- **List Management**: Organize contacts into targeted lists for campaigns
+- **Task Tracking**: Create follow-up tasks associated with contacts
+- **Note Taking**: Attach meeting notes and context to records
+- **Activity Feed**: View the complete timeline of changes for any record
+- **Search**: Find records across your entire workspace
 - **Data Enrichment**: Update records with additional information from external sources
+- **AI Context**: Add unstructured context and query your CRM with natural language

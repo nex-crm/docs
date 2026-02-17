@@ -32,13 +32,15 @@
             ]
           },
           {
-            "group": "Lists",
+            "group": "Schema",
             "pages": [
-              "api-reference/lists/upsert-list-member",
-              "api-reference/lists/add-record-to-a-list",
-              "api-reference/lists/get-records-from-a-specific-list",
-              "api-reference/lists/update-record-within-a-list",
-              "api-reference/lists/list-all-lists-for-a-specific-object"
+              "api-reference/schema/create-object-definition",
+              "api-reference/schema/get-object-definition",
+              "api-reference/schema/update-object-definition",
+              "api-reference/schema/delete-object-definition",
+              "api-reference/schema/create-attribute-definition",
+              "api-reference/schema/update-attribute-definition",
+              "api-reference/schema/delete-attribute-definition"
             ]
           },
           {
@@ -50,11 +52,68 @@
           {
             "group": "Records",
             "pages": [
-              "api-reference/records/create-or-update-a-record",
               "api-reference/records/create-a-new-record",
+              "api-reference/records/create-or-update-a-record",
               "api-reference/records/list-records-for-a-specific-object-type",
               "api-reference/records/get-a-specific-record-by-id",
-              "api-reference/records/update-an-existing-record"
+              "api-reference/records/update-an-existing-record",
+              "api-reference/records/delete-a-record"
+            ]
+          },
+          {
+            "group": "Relationships",
+            "pages": [
+              "api-reference/relationships/create-relationship-definition",
+              "api-reference/relationships/list-relationship-definitions",
+              "api-reference/relationships/delete-relationship-definition",
+              "api-reference/relationships/create-relationship-instance",
+              "api-reference/relationships/delete-relationship-instance"
+            ]
+          },
+          {
+            "group": "Lists",
+            "pages": [
+              "api-reference/lists/create-a-list",
+              "api-reference/lists/get-a-list",
+              "api-reference/lists/delete-a-list",
+              "api-reference/lists/list-all-lists-for-a-specific-object",
+              "api-reference/lists/upsert-list-member",
+              "api-reference/lists/add-record-to-a-list",
+              "api-reference/lists/get-records-from-a-specific-list",
+              "api-reference/lists/update-record-within-a-list",
+              "api-reference/lists/remove-record-from-list"
+            ]
+          },
+          {
+            "group": "Tasks",
+            "pages": [
+              "api-reference/tasks/create-a-task",
+              "api-reference/tasks/list-tasks",
+              "api-reference/tasks/get-a-task",
+              "api-reference/tasks/update-a-task",
+              "api-reference/tasks/delete-a-task"
+            ]
+          },
+          {
+            "group": "Notes",
+            "pages": [
+              "api-reference/notes/create-a-note",
+              "api-reference/notes/list-notes",
+              "api-reference/notes/get-a-note",
+              "api-reference/notes/update-a-note",
+              "api-reference/notes/delete-a-note"
+            ]
+          },
+          {
+            "group": "Timeline",
+            "pages": [
+              "api-reference/timeline/get-record-timeline"
+            ]
+          },
+          {
+            "group": "Search",
+            "pages": [
+              "api-reference/search/search-records"
             ]
           },
           {

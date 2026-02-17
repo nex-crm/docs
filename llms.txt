@@ -1,0 +1,374 @@
+# Nex Developer API
+
+> Nex is a CRM platform. The Developer API provides programmatic access to CRM data via REST endpoints with Bearer token authentication.
+
+## Authentication
+
+All requests require a Bearer token:
+
+```
+Authorization: Bearer sk-YOUR_API_KEY
+```
+
+Base URL: `https://app.nex.ai/api/developers`
+
+## Scopes
+
+Each API key has scopes controlling permitted operations:
+
+- `object.read` — Read object definitions
+- `object.write` — Create/update/delete object definitions, attributes, lists
+- `record.read` — Read records, search, timeline
+- `record.write` — Create/update/delete records and list memberships
+- `list.read` — Read list definitions
+- `list.member.read` — Read list members
+- `list.member.write` — Add/update/remove list members
+- `relationship.read` — Read relationship definitions
+- `relationship.write` — Create/delete relationship definitions and instances
+- `task.read` — Read tasks
+- `task.write` — Create/update/delete tasks
+- `note.read` — Read notes
+- `note.write` — Create/update/delete notes
+- `insight.stream` — SSE insight streaming
+
+## Data Model
+
+Nex uses an Entity-Attribute-Value (EAV) model:
+
+- **Objects** (entity definitions) define schema — like database tables
+- **Records** (entities) are instances of objects — like database rows
+- **Attributes** define fields on objects with types: text, number, email, phone, url, date, boolean, currency, location, select, social_profile, domain, full_name
+- **Relationships** link object types (one_to_one, one_to_many, many_to_many)
+- **Lists** group records for campaigns/segments
+- **Tasks** are actionable items linked to records
+- **Notes** are free-form text linked to records
+
+Default object types: person, company. Custom types can be created.
+
+IDs are strings in API responses. Timestamps use RFC3339 format.
+
+---
+
+## Endpoints
+
+### Schema Management
+
+#### POST /v1/objects
+Create an object definition.
+Scope: `object.write`
+Body: `{ "name": "Project", "slug": "project", "name_plural": "Projects", "description": "...", "type": "custom" }`
+Required fields: name, slug. Type defaults to "custom". Options: person, company, custom, deal.
+Returns: ObjectDefinitionResponse with id, slug, type, name, name_plural, description, created_at, attributes[].
+
+#### GET /v1/objects
+List all object definitions in the workspace.
+Scope: `object.read`
+Query: `include_attributes` (boolean) — include attribute definitions.
+Returns: `{ "data": [ObjectDefinitionResponse, ...] }`
+
+#### GET /v1/objects/{slug}
+Get a single object definition with all attributes.
+Scope: `object.read`
+Returns: ObjectDefinitionResponse.
+
+#### PATCH /v1/objects/{slug}
+Update an object definition. All fields optional.
+Scope: `object.write`
+Body: `{ "name": "...", "name_plural": "...", "description": "..." }`
+Returns: ObjectDefinitionResponse.
+
+#### DELETE /v1/objects/{slug}
+Delete an object definition and all associated data.
+Scope: `object.write`
+Returns: 200 OK (empty body).
+
+#### POST /v1/objects/{slug}/attributes
+Create an attribute definition on an object.
+Scope: `object.write`
+Body: `{ "name": "Status", "slug": "status", "type": "select", "description": "...", "options": { "is_required": true, "is_unique": false, "is_multi_value": false, "select_options": [{"name": "Open"}, {"name": "Done"}] } }`
+Required fields: name, slug, type.
+Attribute types: text, number, email, phone, url, date, boolean, currency, location, select, social_profile, domain, full_name.
+Returns: AttributeDefinitionResponse with id, slug, type, name, description, options.
+
+#### PATCH /v1/objects/{slug}/attributes/{attr_id}
+Update an attribute definition. All fields optional.
+Scope: `object.write`
+Body: `{ "name": "...", "description": "...", "options": { "is_required": false, "select_options": [{"id": "existing-id", "name": "Renamed"}, {"name": "New"}] } }`
+Returns: AttributeDefinitionResponse.
+
+#### DELETE /v1/objects/{slug}/attributes/{attr_id}
+Delete an attribute definition.
+Scope: `object.write`
+Returns: 200 OK (empty body).
+
+### Records
+
+#### POST /v1/objects/{slug}
+Create a new record for an object type.
+Scope: `record.write`
+Body: `{ "attributes": { "name": "John Doe", "email_addresses": ["john@example.com"] } }`
+Name can be a string or structured object (e.g., `{"first_name": "John", "last_name": "Doe"}`).
+Returns: RecordResponse with id, object_id, type, workspace_id, created_at, updated_at, attributes.
+
+#### PUT /v1/objects/{slug}
+Upsert a record (create or update based on matching attribute).
+Scope: `record.write`
+Body: `{ "matching_attribute": "email_addresses", "attributes": { "name": "Jane Smith", "email_addresses": ["jane@example.com"] } }`
+Required fields: attributes, matching_attribute.
+Returns: RecordResponse.
+
+#### POST /v1/objects/{slug}/records
+List records for an object type with pagination.
+Scope: `record.read`
+Body: `{ "attributes": "all", "limit": 50, "offset": 0, "sort": { "attribute": "name", "direction": "asc" } }`
+Attributes param: "all", "primary", "none", or `{"mode": "custom", "slugs": ["name", "email_addresses"]}`.
+Returns: `{ "data": [RecordResponse, ...], "total": 247, "limit": 50, "offset": 0 }`
+
+#### GET /v1/records/{record_id}
+Get a single record with all attributes.
+Scope: `record.read`
+Returns: RecordResponse.
+
+#### PATCH /v1/records/{record_id}
+Update a record's attributes.
+Scope: `record.write`
+Body: `{ "attributes": { "job_title": "Senior Engineer" } }`
+Returns: RecordResponse.
+
+#### DELETE /v1/records/{record_id}
+Delete a record permanently.
+Scope: `record.write`
+Returns: 200 OK (empty body).
+
+### Relationships
+
+#### POST /v1/relationships
+Create a relationship definition between two object types.
+Scope: `relationship.write`
+Body: `{ "type": "one_to_many", "entity_definition_1_id": "123", "entity_definition_2_id": "456", "entity_1_to_2_predicate": "has", "entity_2_to_1_predicate": "belongs to" }`
+Required: type, entity_definition_1_id, entity_definition_2_id.
+Types: one_to_one, one_to_many, many_to_many.
+Returns: RelationshipDefinitionResponse with id, type, entity_definition_1_id, entity_definition_2_id, predicates, created_at.
+
+#### GET /v1/relationships
+List all relationship definitions.
+Scope: `relationship.read`
+Returns: `{ "data": [RelationshipDefinitionResponse, ...] }`
+
+#### DELETE /v1/relationships/{id}
+Delete a relationship definition.
+Scope: `relationship.write`
+Returns: 200 OK (empty body).
+
+#### POST /v1/records/{record_id}/relationships
+Create a relationship instance between two records.
+Scope: `relationship.write`
+Body: `{ "definition_id": "789", "entity_1_id": "1001", "entity_2_id": "2002" }`
+Returns: RelationshipInstanceResponse with id, definition_id, entity_1_id, entity_2_id, created_at.
+
+#### DELETE /v1/records/{record_id}/relationships/{rel_id}
+Delete a relationship instance.
+Scope: `relationship.write`
+Returns: 200 OK (empty body).
+
+### Lists
+
+#### POST /v1/objects/{slug}/lists
+Create a list for an object type.
+Scope: `object.write`
+Body: `{ "name": "VIP Contacts", "slug": "vip-contacts", "description": "High-value contacts" }`
+Required: name, slug.
+Returns: ObjectDefinitionResponse (type will be "list").
+
+#### GET /v1/objects/{slug}/lists
+List all lists for an object type.
+Scope: `list.read`
+Query: `include_attributes` (boolean).
+Returns: `{ "data": [ObjectDefinitionResponse, ...] }`
+
+#### GET /v1/lists/{id}
+Get a list by ID.
+Scope: `list.read`
+Returns: ObjectDefinitionResponse.
+
+#### DELETE /v1/lists/{id}
+Delete a list.
+Scope: `object.write`
+Returns: 200 OK (empty body).
+
+#### PUT /v1/lists/{id}
+Upsert a list member (add or update).
+Scope: `list.member.write`
+Body: `{ "parent_id": "record-id", "attributes": { "source": "website", "score": 85 } }`
+Returns: ListMemberResponse with id, object_id, type, workspace_id, attributes.
+
+#### POST /v1/lists/{id}
+Add a record to a list.
+Scope: `list.member.write`
+Body: `{ "parent_id": "record-id", "attributes": { ... } }`
+Returns: ListMemberResponse.
+
+#### POST /v1/lists/{id}/records
+Get records from a list with pagination.
+Scope: `list.member.read`
+Body: `{ "attributes": "all", "limit": 50, "offset": 0, "sort": { "attribute": "name", "direction": "asc" } }`
+Returns: `{ "data": [RecordResponse, ...], "total": 100, "limit": 50, "offset": 0 }`
+
+#### PATCH /v1/lists/{id}/records/{record_id}
+Update a record's list-specific attributes.
+Scope: `list.member.write`
+Body: `{ "attributes": { "status": "qualified" } }`
+Returns: ListRecordResponse.
+
+#### DELETE /v1/lists/{id}/records/{record_id}
+Remove a record from a list (does not delete the record).
+Scope: `record.write`
+Returns: 200 OK (empty body).
+
+### Tasks
+
+#### POST /v1/tasks
+Create a task.
+Scope: `task.write`
+Body: `{ "title": "Follow up", "description": "...", "priority": "high", "due_date": "2026-03-01T09:00:00Z", "entity_ids": ["1001"], "assignee_ids": ["50"] }`
+Required: title.
+Priority: unspecified (default), low, medium, high, urgent.
+Returns: TaskResponse with id, title, description, priority, due_date, is_completed, assignee_ids, entity_ids, created_by, created_by_id, created_at.
+
+#### GET /v1/tasks
+List tasks with filtering.
+Scope: `task.read`
+Query params: entity_id, assignee_id, search, is_completed (bool), limit (1-500, default 100), offset (default 0).
+Returns: `{ "data": [TaskResponse, ...], "has_more": true, "total": 47, "next_offset": 20 }`
+
+#### GET /v1/tasks/{task_id}
+Get a task by ID.
+Scope: `task.read`
+Returns: TaskResponse.
+
+#### PATCH /v1/tasks/{task_id}
+Update a task. All fields optional.
+Scope: `task.write`
+Body: `{ "title": "...", "description": "...", "priority": "urgent", "due_date": "...", "is_completed": true, "entity_ids": ["1001"], "assignee_ids": ["50"] }`
+Returns: TaskResponse.
+
+#### DELETE /v1/tasks/{task_id}
+Archive (soft-delete) a task.
+Scope: `task.write`
+Returns: 200 OK (empty body). Task gets archived_at timestamp.
+
+### Notes
+
+#### POST /v1/notes
+Create a note.
+Scope: `note.write`
+Body: `{ "title": "Meeting notes", "content": "Discussed roadmap...", "entity_id": "1001" }`
+Required: title.
+Returns: NoteResponse with id, title, content, entity_id, created_by, created_at.
+
+#### GET /v1/notes
+List notes (capped at 200).
+Scope: `note.read`
+Query: entity_id (filter by record).
+Returns: `{ "data": [NoteResponse, ...] }`
+
+#### GET /v1/notes/{note_id}
+Get a note by ID.
+Scope: `note.read`
+Returns: NoteResponse.
+
+#### PATCH /v1/notes/{note_id}
+Update a note. All fields optional.
+Scope: `note.write`
+Body: `{ "title": "...", "content": "...", "entity_id": "2002" }`
+Returns: NoteResponse.
+
+#### DELETE /v1/notes/{note_id}
+Archive (soft-delete) a note.
+Scope: `note.write`
+Returns: 200 OK (empty body). Note gets archived_at timestamp.
+
+### Timeline
+
+#### GET /v1/records/{record_id}/timeline
+Get the activity timeline for a record.
+Scope: `record.read`
+Query: limit (1-100, default 50), cursor (from previous response).
+Returns: `{ "data": [TimelineEvent, ...], "has_next_page": true, "next_cursor": "4999" }`
+
+TimelineEvent fields: id, resource_type, resource_id, event_type, event_payload, event_timestamp, created_by, created_by_id, is_aggregated, children[].
+
+Resource types: entity, task, note, list_item, attribute.
+Event types: created, updated, deleted, archived.
+
+Event payload contains the relevant resource data (task, note, entity, list_item, attribute) plus field_changes for updates.
+
+### Search
+
+#### POST /v1/search
+Full-text search across all records.
+Scope: `record.read`
+Body: `{ "query": "john doe" }`
+Required: query (1-500 chars).
+Returns: `{ "results": { "person": [SearchResult, ...], "company": [...] }, "errored_search_types": [] }`
+
+SearchResult fields: id, primary_value, matched_value, score, entity_definition_id.
+Results grouped by object type. Partial results returned if some types error.
+
+### Context (AI)
+
+#### POST /v1/context/text
+Add unstructured context text for AI processing.
+Scope: `insight.stream`
+Body: `{ "content": "Marcus commented: Would love a demo", "context": "LinkedIn activity" }`
+Returns: `{ "artifact_id": 12345 }`
+
+#### GET /v1/context/artifacts/{artifact_id}
+Get processing results for a context artifact.
+Scope: `insight.stream`
+Returns artifact with status (pending, processing, completed, failed) and extraction results.
+
+#### POST /v1/context/ask
+Ask AI a natural language question about your CRM data.
+Scope: `insight.stream`
+Body: `{ "query": "What's the status with techflow.io?" }`
+Returns AI-generated answer with entities_considered and signals_used.
+
+### AI Lists
+
+#### POST /v1/context/list/jobs
+Create an AI-powered list generation job.
+Scope: `insight.stream`
+Body: `{ "query": "all companies in tech", "object_type": "company" }`
+Returns: `{ "job_id": "abc123", "status": "pending" }`
+
+#### GET /v1/context/list/jobs/{job_id}
+Get AI list job status and results.
+Scope: `insight.stream`
+Query: include_attributes (boolean).
+Returns job status and generated list results when completed.
+
+---
+
+## Error Format
+
+All errors return:
+```json
+{ "code": 400, "message": "Description of the error" }
+```
+
+Status codes: 400 (bad request), 401 (unauthorized), 404 (not found), 429 (rate limited), 500 (server error).
+
+## Pagination Patterns
+
+**Offset-based** (records, tasks, list records):
+- Request: `limit` and `offset` params
+- Response: `total`, `has_more`, `next_offset`
+
+**Cursor-based** (timeline):
+- Request: `limit` and `cursor` params
+- Response: `has_next_page`, `next_cursor`
+
+## Soft Deletes
+
+Tasks and notes use soft delete (archive). DELETE returns 200 OK and sets `archived_at` on the resource. Records and object definitions use hard delete.
