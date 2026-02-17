@@ -1,7 +1,7 @@
 {
   "name": "nex-docs",
   "version": "1.0.0",
-  "description": "NEX CRM API Documentation",
+  "description": "Nex API Documentation",
   "scripts": {
     "dev": "mintlify dev",
     "update-api-docs": "./scripts/update-api-docs.sh",

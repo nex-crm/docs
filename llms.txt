@@ -1,6 +1,6 @@
 # Nex Developer API
 
-> Nex is a CRM platform. The Developer API provides programmatic access to CRM data via REST endpoints with Bearer token authentication.
+> Nex is a platform for sharing real-time organizational context with AI agents. The Developer API provides programmatic access to your data via REST endpoints with Bearer token authentication.
 
 ## Authentication
 
@@ -346,7 +346,7 @@ Scope: `insight.stream`
 Returns artifact with status (pending, processing, completed, failed) and extraction results.
 
 #### POST /v1/context/ask
-Ask AI a natural language question about your CRM data.
+Ask AI a natural language question about your data.
 Scope: `insight.stream`
 Body: `{ "query": "What's the status with techflow.io?" }`
 Returns AI-generated answer with entities_considered and signals_used.
