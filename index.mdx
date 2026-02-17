@@ -5,46 +5,97 @@ description: "Developer documentation and API reference for the Nex platform"
 
 ## Getting Started
 
-Nex provides powerful APIs to help you build amazing applications.
+Nex provides a powerful REST API for programmatic access to your CRM data. Create and manage custom objects, records, relationships, tasks, notes, and more.
 
-<Card
-  title="API Reference"
-  icon="terminal"
-  href="/api-reference/introduction"
-  horizontal
->
-  Explore our comprehensive API documentation
-</Card>
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="terminal"
+    href="/api-reference/introduction"
+  >
+    Explore the complete API documentation with interactive playground
+  </Card>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/api-reference/introduction#authentication"
+  >
+    Set up API keys and scopes for your integration
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+```bash
+# Authenticate with your API key
+curl https://app.nex.ai/api/developers/v1/objects \
+  -H "Authorization: Bearer sk-YOUR_API_KEY"
+```
 
 ## Core Features
 
-<Columns cols={2}>
+<CardGroup cols={3}>
   <Card
-    title="Records Management"
+    title="Schema"
+    icon="cube"
+    href="/api-reference/schema/create-object-definition"
+  >
+    Define custom object types and attributes
+  </Card>
+  <Card
+    title="Records"
     icon="database"
     href="/api-reference/records/create-a-new-record"
   >
-    Create, read, update and manage records in your workspace
+    Create, read, update, and delete records
   </Card>
   <Card
-    title="Lists & Organization"
+    title="Relationships"
+    icon="link"
+    href="/api-reference/relationships/create-relationship-definition"
+  >
+    Connect records across object types
+  </Card>
+  <Card
+    title="Lists"
     icon="list"
-    href="/api-reference/lists/create-or-update-a-list-member"
+    href="/api-reference/lists/create-a-list"
   >
-    Organize your data with flexible list management
+    Organize records into lists and segments
   </Card>
   <Card
-    title="Object Types"
-    icon="cube"
-    href="/api-reference/objects/list-all-objects-in-the-workspace"
+    title="Tasks"
+    icon="circle-check"
+    href="/api-reference/tasks/create-a-task"
   >
-    Work with different object types in your workspace
+    Create and track follow-up tasks
   </Card>
   <Card
-    title="Developer Tools"
-    icon="code"
-    href="/api-reference/introduction"
+    title="Notes"
+    icon="note-sticky"
+    href="/api-reference/notes/create-a-note"
   >
-    Full REST API with comprehensive documentation
+    Attach notes and context to records
   </Card>
-</Columns>
+  <Card
+    title="Timeline"
+    icon="clock-rotate-left"
+    href="/api-reference/timeline/get-record-timeline"
+  >
+    View the full activity history for any record
+  </Card>
+  <Card
+    title="Search"
+    icon="magnifying-glass"
+    href="/api-reference/search/search-records"
+  >
+    Full-text search across all records
+  </Card>
+  <Card
+    title="AI Intelligence"
+    icon="brain"
+    href="/api-reference/context/query-context"
+  >
+    Ask questions and add context with AI
+  </Card>
+</CardGroup>
