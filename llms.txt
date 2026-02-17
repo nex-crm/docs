@@ -315,6 +315,23 @@ Returns: `{ "results": { "person": [SearchResult, ...], "company": [...] }, "err
 SearchResult fields: id, primary_value, matched_value, score, entity_definition_id.
 Results grouped by object type. Partial results returned if some types error.
 
+### Insights
+
+#### GET /v1/insights
+Retrieve insights for the workspace.
+Scope: `insight.stream`
+Query params: last (string, rolling duration like "30m", "2h"), from (string, RFC3339 start), to (string, RFC3339 end), limit (integer, default 20).
+Three query modes: use `last` for rolling window, `from`/`to` for date range, or no time params for most recent.
+Returns: `{ "data": [InsightResponse, ...] }`
+InsightResponse fields: id, workspace_id, content, type, entities[], created_at.
+
+#### GET /v1/insights/stream
+Stream real-time insights via Server-Sent Events (SSE).
+Scope: `insight.stream`
+Headers: `Accept: text/event-stream`
+On connect, recent insights replayed as `insight.replay` events (up to 20). New insights arrive as `insight.batch.created` events. Keepalive comments every 30 seconds.
+Event data: `{"workspace":{...},"insights":[...],"insight_count":3,"emitted_at":"..."}`
+
 ### Context (AI)
 
 #### POST /v1/context/text
