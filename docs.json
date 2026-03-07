@@ -153,6 +153,15 @@
             ]
           },
           {
+            "group": "Integrations",
+            "pages": [
+              "api-reference/integrations/list-integrations",
+              "api-reference/integrations/start-oauth-connection",
+              "api-reference/integrations/get-connection-status",
+              "api-reference/integrations/disconnect-integration"
+            ]
+          },
+          {
             "group": "AI Lists",
             "pages": [
               "api-reference/ai-lists/create-ai-list-job",
