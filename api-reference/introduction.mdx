@@ -50,6 +50,8 @@ Each API key has specific scopes that control what operations it can perform. Re
 | `task.write` | Create, update, and delete tasks |
 | `note.read` | Read notes |
 | `note.write` | Create, update, and delete notes |
+| `integration.read` | List integrations and check connection status |
+| `integration.write` | Connect and disconnect integrations |
 | `insight.stream` | SSE insight streaming |
 
 ## Data Model Overview
@@ -120,6 +122,28 @@ Notes are free-form text entries that can be associated with records. Deleting a
 ### Timeline
 
 The timeline provides a chronological activity feed for any record, including tasks, notes, attribute changes, and relationship events. Supports cursor-based pagination.
+
+### Integrations
+
+Integrations connect your workspace to third-party services like Gmail, Google Calendar, Outlook, Slack, and CRM platforms. Use the OAuth flow to connect accounts, then Nex automatically syncs data into your workspace.
+
+**Supported integrations:**
+
+| Type | Provider | Name |
+|------|----------|------|
+| `email` | `google` | Gmail |
+| `calendar` | `google` | Google Calendar |
+| `email` | `microsoft` | Outlook |
+| `calendar` | `microsoft` | Outlook Calendar |
+| `messaging` | `slack` | Slack |
+| `crm` | `attio` | Attio |
+| `crm` | `hubspot` | HubSpot |
+| `crm` | `salesforce` | Salesforce |
+
+**OAuth flow:**
+1. Call `POST /v1/integrations/{type}/{provider}/connect` to get an `auth_url` and `connect_id`
+2. Open the `auth_url` in a browser for the user to authorize
+3. Poll `GET /v1/integrations/connect/{connect_id}/status` until status is `"connected"`
 
 ### Search
 
