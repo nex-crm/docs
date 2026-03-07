@@ -29,6 +29,8 @@ Each API key has scopes controlling permitted operations:
 - `task.write` — Create/update/delete tasks
 - `note.read` — Read notes
 - `note.write` — Create/update/delete notes
+- `integration.read` — List integrations, check connection status
+- `integration.write` — Connect and disconnect integrations
 - `insight.stream` — SSE insight streaming
 
 ## Data Model
@@ -42,6 +44,7 @@ Nex uses an Entity-Attribute-Value (EAV) model:
 - **Lists** group records for campaigns/segments
 - **Tasks** are actionable items linked to records
 - **Notes** are free-form text linked to records
+- **Integrations** connect third-party services (Gmail, Slack, etc.) via OAuth
 
 Default object types: person, company. Custom types can be created.
 
@@ -331,6 +334,37 @@ Scope: `insight.stream`
 Headers: `Accept: text/event-stream`
 On connect, recent insights replayed as `insight.replay` events (up to 20). New insights arrive as `insight.batch.created` events. Keepalive comments every 30 seconds.
 Event data: `{"workspace":{...},"insights":[...],"insight_count":3,"emitted_at":"..."}`
+
+### Integrations
+
+#### GET /v1/integrations
+List all available integrations and their connection status.
+Scope: `integration.read`
+Returns: Array of IntegrationResponse objects.
+
+IntegrationResponse fields: type (email, calendar, messaging, crm), provider (google, microsoft, slack, attio, hubspot, salesforce), display_name, description, connections[].
+ConnectionResponse fields: id, status, identifier (email/username).
+
+Supported integrations: Gmail (email/google), Google Calendar (calendar/google), Outlook (email/microsoft), Outlook Calendar (calendar/microsoft), Slack (messaging/slack), Attio (crm/attio), HubSpot (crm/hubspot), Salesforce (crm/salesforce).
+
+#### POST /v1/integrations/{type}/{provider}/connect
+Start an OAuth connection flow.
+Scope: `integration.write`
+Rate limit: 10 requests/minute.
+Path params: type (email, calendar, messaging, crm), provider (google, microsoft, slack, attio, hubspot, salesforce).
+Returns: `{ "auth_url": "https://...", "connect_id": "eyJ..." }`
+Open auth_url in a browser for user authorization. Use connect_id to poll for completion.
+
+#### GET /v1/integrations/connect/{connect_id}/status
+Poll OAuth connection status.
+Scope: `integration.read`
+Returns: `{ "status": "pending" }` or `{ "status": "connected", "connection_id": 12345 }`
+The connect_id expires after 10 minutes (returns 410 Gone).
+
+#### DELETE /v1/integrations/connections/{connection_id}
+Disconnect an integration connection.
+Scope: `integration.write`
+Returns: 200 OK (empty body).
 
 ### Context (AI)
 
