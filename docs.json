@@ -153,6 +153,12 @@
             ]
           },
           {
+            "group": "Graph",
+            "pages": [
+              "api-reference/graph/get-knowledge-graph"
+            ]
+          },
+          {
             "group": "Integrations",
             "pages": [
               "api-reference/integrations/list-integrations",

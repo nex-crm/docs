@@ -18,7 +18,7 @@ Each API key has scopes controlling permitted operations:
 
 - `object.read` — Read object definitions
 - `object.write` — Create/update/delete object definitions, attributes, lists
-- `record.read` — Read records, search, timeline
+- `record.read` — Read records, search, timeline, knowledge graph
 - `record.write` — Create/update/delete records and list memberships
 - `list.read` — Read list definitions
 - `list.member.read` — Read list members
@@ -365,6 +365,24 @@ The connect_id expires after 10 minutes (returns 410 Gone).
 Disconnect an integration connection.
 Scope: `integration.write`
 Returns: 200 OK (empty body).
+
+### Knowledge Graph
+
+#### GET /v1/graph
+Get the full knowledge graph for the workspace.
+Scope: `record.read`
+Query params: limit (integer, 1-5000, default 1000), format (string, "json" or "html").
+Returns: GraphResponse with nodes[], edges[], relationship_definitions[], context_edges[], insight_nodes[], insights (map), total_nodes, total_edges, total_context_edges.
+
+Node types: CRM entities (numeric IDs like "12345"), ghosts ("ghost:123"), entity insights ("ei:123"), knowledge insights ("ki:123").
+
+context_edges array has edge_type field:
+- `context` — from ingested text (no confidence)
+- `triplet` — AI-extracted subject-predicate-object (has confidence 0-1)
+- `insight` — links insight nodes to entities (no confidence)
+- `insight_link` — semantic relationships between insights: "related_to" or "contradicts" (has confidence 0-1)
+
+Set `Accept: text/html` or `?format=html` for interactive graph visualization.
 
 ### Context (AI)
 
