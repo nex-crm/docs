@@ -3752,6 +3752,16 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad request - Invalid query parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized - Invalid or missing API key",
                         "content": {
@@ -6777,7 +6787,7 @@
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "Edge ID. Prefixed by type: \"ctx_\" for context, \"tri_\" for triplet, \"ei_edge_\" for entity insight edges.",
+                        "description": "Edge ID. Prefixed by type: \"ctx_\" for context, \"tri_\" for triplet, \"ei_edge_\" for entity insight edges, and \"il_\" for insight_link edges.",
                         "example": "tri_42"
                     },
                     "source": {

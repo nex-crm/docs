@@ -369,10 +369,11 @@ Returns: 200 OK (empty body).
 ### Knowledge Graph
 
 #### GET /v1/graph
-Get the full knowledge graph for the workspace.
+Get the knowledge graph for the workspace (up to limit).
 Scope: `record.read`
-Query params: limit (integer, 1-5000, default 1000), format (string, "json" or "html").
+Query params: limit (integer, 1-5000, default 1000 — limits number of entity nodes returned), format (string, "json" or "html").
 Returns: GraphResponse with nodes[], edges[], relationship_definitions[], context_edges[], insight_nodes[], insights (map), total_nodes, total_edges, total_context_edges.
+Note: total_nodes and total_edges reflect workspace-wide counts and may exceed the returned slice. Nodes are returned by most recent creation date. To retrieve the full graph, increase the limit up to 5000.
 
 Node types: CRM entities (numeric IDs like "12345"), ghosts ("ghost:123"), entity insights ("ei:123"), knowledge insights ("ki:123").
 

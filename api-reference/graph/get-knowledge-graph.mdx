@@ -13,12 +13,12 @@ Returns the full knowledge graph for your workspace. The graph combines CRM rela
 
 ## Node Types
 
-| Type | ID Format | Description |
-|------|-----------|-------------|
-| CRM entity | `"12345"` | Resolved entities (people, companies, custom objects) |
-| Ghost | `"ghost:123"` | Entities mentioned in context but not yet matched to a CRM record |
-| Entity insight | `"ei:123"` | AI-extracted insight scoped to a specific entity |
-| Knowledge insight | `"ki:123"` | Workspace-level AI-extracted knowledge |
+| Type | ID Format | Response Field | Description |
+|------|-----------|----------------|-------------|
+| CRM entity | `"12345"` | `nodes` | Resolved entities (people, companies, custom objects) |
+| Ghost | `"ghost:123"` | `nodes` | Entities mentioned in context but not yet matched to a CRM record |
+| Entity insight | `"ei:123"` | `insight_nodes` | AI-extracted insight scoped to a specific entity |
+| Knowledge insight | `"ki:123"` | `insight_nodes` | Workspace-level AI-extracted knowledge |
 
 ## Edge Types
 
