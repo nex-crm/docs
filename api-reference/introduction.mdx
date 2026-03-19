@@ -149,6 +149,10 @@ Integrations connect your workspace to third-party services like Gmail, Google C
 
 The knowledge graph provides a unified view of all entities and their connections. It combines CRM relationships (e.g., person works_at company) with AI-extracted knowledge from ingested context, including triplet relationships, entity insights, and semantic links between insights. Supports JSON output for programmatic access and an interactive HTML visualization. See [Get knowledge graph](/api-reference/graph/get-knowledge-graph).
 
+### Compounding
+
+The compounding pipeline continuously refines your workspace's intelligence by consolidating duplicate insights, detecting patterns, synthesizing playbooks, and decaying stale data. Use the [Trigger compounding job](/api-reference/compounding/trigger-job) endpoint to run these intelligence jobs on demand -- for example, right after onboarding or bulk file ingestion -- instead of waiting for the next scheduled cycle.
+
 ### Search
 
 Full-text search across all records in the workspace. Results are grouped by object type and include relevance scores.
@@ -211,3 +215,4 @@ All error responses follow a consistent format:
 - **Search**: Find records across your entire workspace
 - **Data Enrichment**: Update records with additional information from external sources
 - **AI Context**: Add unstructured context and query your data with natural language
+- **Compounding**: Trigger on-demand intelligence jobs to consolidate insights, detect patterns, and synthesize playbooks

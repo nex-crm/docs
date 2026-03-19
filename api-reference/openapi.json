@@ -4084,6 +4084,74 @@
                     }
                 }
             }
+        },
+        "/v1/compounding/trigger": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Triggers an on-demand compounding intelligence job for the workspace. Use after onboarding, file scanning, or bulk context ingestion to run intelligence pipelines immediately instead of waiting for the next scheduled cron cycle. Supported job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules from patterns), decay_sweep (reduce confidence on stale insights), and metrics (snapshot pipeline metrics). Set dry_run to true to preview impact without persisting changes.",
+                "tags": [
+                    "Compounding"
+                ],
+                "summary": "Trigger compounding job",
+                "operationId": "triggerCompoundingJob",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/compounding.TriggerJobRequest"
+                            }
+                        }
+                    },
+                    "description": "Job trigger request",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job execution result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/compounding.TriggerJobResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid job type or request body",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "servers": [
@@ -6871,6 +6939,77 @@
                     "type": {
                         "type": "string",
                         "description": "Insight type"
+                    }
+                }
+            },
+            "compounding.TriggerJobRequest": {
+                "type": "object",
+                "required": ["job_type"],
+                "properties": {
+                    "job_type": {
+                        "type": "string",
+                        "description": "The type of compounding job to run",
+                        "enum": [
+                            "consolidation",
+                            "pattern_detection",
+                            "playbook_synthesis",
+                            "decay_sweep",
+                            "metrics"
+                        ]
+                    },
+                    "dry_run": {
+                        "type": "boolean",
+                        "description": "If true, preview impact without persisting changes",
+                        "default": false
+                    }
+                }
+            },
+            "compounding.TriggerJobResponse": {
+                "type": "object",
+                "properties": {
+                    "job_run_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for this job execution"
+                    },
+                    "job_type": {
+                        "type": "string",
+                        "description": "The type of job that was executed",
+                        "enum": [
+                            "consolidation",
+                            "pattern_detection",
+                            "playbook_synthesis",
+                            "decay_sweep",
+                            "metrics"
+                        ]
+                    },
+                    "workspace_id": {
+                        "type": "integer",
+                        "description": "Workspace ID the job ran against"
+                    },
+                    "dry_run": {
+                        "type": "boolean",
+                        "description": "Whether the job ran in dry-run mode"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "description": "Whether the job completed successfully"
+                    },
+                    "insights_scanned": {
+                        "type": "integer",
+                        "description": "Total number of insights evaluated during the job"
+                    },
+                    "insights_affected": {
+                        "type": "integer",
+                        "description": "Number of insights modified (or that would be modified in dry-run mode)"
+                    },
+                    "candidates_created": {
+                        "type": "integer",
+                        "description": "Number of new candidates (e.g., merge candidates, pattern candidates) produced"
+                    },
+                    "duration_ms": {
+                        "type": "integer",
+                        "description": "Job execution time in milliseconds"
                     }
                 }
             }

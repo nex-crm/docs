@@ -418,6 +418,16 @@ Scope: `insight.stream`
 Query: include_attributes (boolean).
 Returns job status and generated list results when completed.
 
+### Compounding
+
+#### POST /v1/compounding/trigger
+Trigger an on-demand compounding intelligence job.
+Scope: `record.write`
+Body: `{ "job_type": "pattern_detection", "dry_run": false }`
+Job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules), decay_sweep (reduce confidence on stale insights), metrics (snapshot pipeline metrics).
+Set `dry_run: true` to preview impact without persisting changes.
+Returns: `{ "job_run_id": "uuid", "job_type": "...", "workspace_id": 12345, "dry_run": false, "success": true, "insights_scanned": 42, "insights_affected": 3, "candidates_created": 2, "duration_ms": 1200 }`
+
 ---
 
 ## Error Format

@@ -173,6 +173,12 @@
               "api-reference/ai-lists/create-ai-list-job",
               "api-reference/ai-lists/get-ai-list-job"
             ]
+          },
+          {
+            "group": "Compounding",
+            "pages": [
+              "api-reference/compounding/trigger-job"
+            ]
           }
         ]
       }
