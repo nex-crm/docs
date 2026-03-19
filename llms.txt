@@ -18,7 +18,7 @@ Each API key has scopes controlling permitted operations:
 
 - `object.read` — Read object definitions
 - `object.write` — Create/update/delete object definitions, attributes, lists
-- `record.read` — Read records, search, timeline
+- `record.read` — Read records, search, timeline, knowledge graph
 - `record.write` — Create/update/delete records and list memberships
 - `list.read` — Read list definitions
 - `list.member.read` — Read list members
@@ -366,6 +366,25 @@ Disconnect an integration connection.
 Scope: `integration.write`
 Returns: 200 OK (empty body).
 
+### Knowledge Graph
+
+#### GET /v1/graph
+Get the knowledge graph for the workspace (up to limit).
+Scope: `record.read`
+Query params: limit (integer, 1-5000, default 1000 — limits number of entity nodes returned), format (string, "json" or "html").
+Returns: GraphResponse with nodes[], edges[], relationship_definitions[], context_edges[], insight_nodes[], insights (map), total_nodes, total_edges, total_context_edges.
+Note: total_nodes and total_edges reflect workspace-wide counts and may exceed the returned slice. Nodes are returned by most recent creation date. To retrieve the full graph, increase the limit up to 5000.
+
+Node types: CRM entities (numeric IDs like "12345"), ghosts ("ghost:123"), entity insights ("ei:123"), knowledge insights ("ki:123").
+
+context_edges array has edge_type field:
+- `context` — from ingested text (no confidence)
+- `triplet` — AI-extracted subject-predicate-object (has confidence 0-1)
+- `insight` — links insight nodes to entities (no confidence)
+- `insight_link` — semantic relationships between insights: "related_to" or "contradicts" (has confidence 0-1)
+
+Set `Accept: text/html` or `?format=html` for interactive graph visualization.
+
 ### Context (AI)
 
 #### POST /v1/context/text
@@ -398,6 +417,16 @@ Get AI list job status and results.
 Scope: `insight.stream`
 Query: include_attributes (boolean).
 Returns job status and generated list results when completed.
+
+### Compounding
+
+#### POST /v1/compounding/trigger
+Trigger an on-demand compounding intelligence job.
+Scope: `record.write`
+Body: `{ "job_type": "pattern_detection", "dry_run": false }`
+Job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules), decay_sweep (reduce confidence on stale insights), metrics (snapshot pipeline metrics).
+Set `dry_run: true` to preview impact without persisting changes.
+Returns: `{ "job_run_id": "uuid", "job_type": "...", "workspace_id": 12345, "dry_run": false, "success": true, "insights_scanned": 42, "insights_affected": 3, "candidates_created": 2, "duration_ms": 1200 }`
 
 ---
 

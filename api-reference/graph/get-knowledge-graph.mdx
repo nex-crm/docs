@@ -1,0 +1,170 @@
+---
+title: Get knowledge graph
+openapi: get /v1/graph
+---
+
+<Note>
+  This endpoint requires the `record.read` scope on your API key.
+</Note>
+
+## Overview
+
+Returns the full knowledge graph for your workspace. The graph combines CRM relationship data with AI-extracted knowledge from ingested context, providing a unified view of entities and their connections.
+
+## Node Types
+
+| Type | ID Format | Response Field | Description |
+|------|-----------|----------------|-------------|
+| CRM entity | `"12345"` | `nodes` | Resolved entities (people, companies, custom objects) |
+| Ghost | `"ghost:123"` | `nodes` | Entities mentioned in context but not yet matched to a CRM record |
+| Entity insight | `"ei:123"` | `insight_nodes` | AI-extracted insight scoped to a specific entity |
+| Knowledge insight | `"ki:123"` | `insight_nodes` | Workspace-level AI-extracted knowledge |
+
+## Edge Types
+
+The `context_edges` array contains edges from multiple sources, distinguished by the `edge_type` field:
+
+| Edge Type | Description | Has Confidence |
+|-----------|-------------|:--------------:|
+| `context` | Relationships from ingested text (e.g., "involved_in") | No |
+| `triplet` | AI-extracted subject-predicate-object relationships (e.g., "works_with", "reports_to") | Yes |
+| `insight` | Links connecting insight nodes to entity nodes | No |
+| `insight_link` | Semantic relationships between insight nodes (`related_to` or `contradicts`) | Yes |
+
+### Insight Link Edges
+
+`insight_link` edges represent semantic relationships discovered between insights. They connect two insight nodes (entity insights `ei:*` or knowledge insights `ki:*`) and always include a `confidence` score (0-1) representing semantic similarity.
+
+**Labels:**
+- `related_to` -- The two insights are semantically related
+- `contradicts` -- The two insights contain contradictory information
+
+```json
+{
+  "id": "il_42",
+  "source": "ei:100",
+  "target": "ei:200",
+  "label": "related_to",
+  "edge_type": "insight_link",
+  "confidence": 0.87
+}
+```
+
+## Edge Priority
+
+When both a `context` edge and a `triplet` edge exist between the same pair of nodes, generic context labels (`involved_in`, `context`) are suppressed in favor of the richer triplet edge. Non-generic context labels are kept alongside triplet edges.
+
+## Interactive Visualization
+
+Request HTML format to receive an interactive graph visualization:
+
+```bash
+# Via query parameter
+curl -s "https://app.nex.ai/api/developers/v1/graph?format=html" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Via Accept header
+curl -s "https://app.nex.ai/api/developers/v1/graph" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: text/html"
+```
+
+## Example
+
+```bash
+curl -s "https://app.nex.ai/api/developers/v1/graph?limit=100" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "nodes": [
+    {
+      "id": "12345",
+      "name": "John Smith",
+      "type": "person",
+      "definition_slug": "person",
+      "primary_attribute": "John Smith",
+      "created_at": "2026-01-15T10:00:00Z"
+    },
+    {
+      "id": "67890",
+      "name": "Acme Corp",
+      "type": "company",
+      "definition_slug": "company",
+      "primary_attribute": "Acme Corp",
+      "created_at": "2026-01-10T08:00:00Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": "1001",
+      "source": "12345",
+      "target": "67890",
+      "label": "works_at",
+      "definition_id": "5"
+    }
+  ],
+  "relationship_definitions": [
+    {
+      "id": "5",
+      "name": "works_at",
+      "entity_1_to_2": "works_at",
+      "entity_2_to_1": "employs"
+    }
+  ],
+  "context_edges": [
+    {
+      "id": "tri_42",
+      "source": "12345",
+      "target": "67890",
+      "label": "leads_project_at",
+      "edge_type": "triplet",
+      "confidence": 0.92
+    },
+    {
+      "id": "ei_edge_100",
+      "source": "ei:100",
+      "target": "12345",
+      "label": "preference",
+      "edge_type": "insight"
+    },
+    {
+      "id": "il_7",
+      "source": "ei:100",
+      "target": "ei:200",
+      "label": "related_to",
+      "edge_type": "insight_link",
+      "confidence": 0.87
+    }
+  ],
+  "insight_nodes": [
+    {
+      "id": "ei:100",
+      "content": "Prefers async communication over meetings",
+      "type": "preference",
+      "confidence": 0.85,
+      "source": "entity_insight"
+    },
+    {
+      "id": "ki:50",
+      "content": "Q1 planning cycle typically starts in December",
+      "type": "fact",
+      "confidence": 0.90,
+      "source": "knowledge_insight"
+    }
+  ],
+  "insights": {
+    "12345": [
+      {
+        "content": "Prefers async communication over meetings",
+        "confidence": 0.85,
+        "type": "preference"
+      }
+    ]
+  },
+  "total_nodes": 250,
+  "total_edges": 180,
+  "total_context_edges": 3
+}
+```

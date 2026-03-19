@@ -1,0 +1,49 @@
+---
+title: Trigger compounding job
+openapi: post /v1/compounding/trigger
+---
+
+<Note>
+  This endpoint requires the `record.write` scope on your API key.
+</Note>
+
+## Overview
+
+Triggers an on-demand compounding intelligence job for your workspace. Use this after onboarding, file scanning, or bulk context ingestion to run intelligence pipelines immediately instead of waiting for the next scheduled cron cycle.
+
+## Job Types
+
+| Job Type | Description |
+|----------|-------------|
+| `consolidation` | Merge near-duplicate insights that refer to the same underlying fact |
+| `pattern_detection` | Discover recurring patterns across insights |
+| `playbook_synthesis` | Generate actionable playbook rules from detected patterns |
+| `decay_sweep` | Reduce confidence scores on stale insights that have not been reinforced recently |
+| `metrics` | Snapshot compounding pipeline metrics for the workspace |
+
+## Dry Run
+
+Set `dry_run` to `true` to preview what the job would do without persisting any changes. The response will still include `insights_scanned`, `insights_affected`, and `candidates_created` counts so you can evaluate the impact before committing.
+
+## Example
+
+```bash
+curl -X POST "https://app.nex.ai/api/developers/v1/compounding/trigger" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"job_type": "pattern_detection", "dry_run": false}'
+```
+
+```json
+{
+  "job_run_id": "550e8400-e29b-41d4-a716-446655440000",
+  "job_type": "pattern_detection",
+  "workspace_id": 12345,
+  "dry_run": false,
+  "success": true,
+  "insights_scanned": 42,
+  "insights_affected": 3,
+  "candidates_created": 2,
+  "duration_ms": 1200
+}
+```
