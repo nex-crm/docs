@@ -168,6 +168,18 @@
             ]
           },
           {
+            "group": "Notifications",
+            "pages": [
+              "api-reference/notifications/get-notification-feed",
+              "api-reference/notifications/get-notification-preferences",
+              "api-reference/notifications/update-notification-preferences",
+              "api-reference/notifications/list-custom-notification-rules",
+              "api-reference/notifications/create-custom-notification-rule",
+              "api-reference/notifications/get-custom-notification-rule",
+              "api-reference/notifications/delete-custom-notification-rule"
+            ]
+          },
+          {
             "group": "AI Lists",
             "pages": [
               "api-reference/ai-lists/create-ai-list-job",
