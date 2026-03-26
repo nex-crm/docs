@@ -11,6 +11,8 @@ openapi: post /v1/compounding/trigger
 
 Triggers an on-demand compounding intelligence job for your workspace. Use this after onboarding, file scanning, or bulk context ingestion to run intelligence pipelines immediately instead of waiting for the next scheduled cron cycle.
 
+This endpoint is asynchronous. It returns `202 Accepted` immediately with a `job_run_id`, then the compounding job continues in the background.
+
 ## Job Types
 
 | Job Type | Description |
@@ -23,7 +25,18 @@ Triggers an on-demand compounding intelligence job for your workspace. Use this 
 
 ## Dry Run
 
-Set `dry_run` to `true` to preview what the job would do without persisting any changes. The response will still include `insights_scanned`, `insights_affected`, and `candidates_created` counts so you can evaluate the impact before committing.
+Set `dry_run` to `true` to preview what the job would do without persisting changes once the background run executes.
+
+## Polling Job Status
+
+After calling this endpoint, poll [Get compounding job status](/api-reference/compounding/get-job-status) with the returned `job_run_id` until the status changes from `accepted` or `running` to `completed` or `failed`.
+
+Typical lifecycle:
+
+- `accepted`: the API accepted the trigger request
+- `running`: the background compounding worker has started
+- `completed`: the job finished and final counts are available
+- `failed`: the job failed and `error_details` explains why
 
 ## Example
 
@@ -40,10 +53,7 @@ curl -X POST "https://app.nex.ai/api/developers/v1/compounding/trigger" \
   "job_type": "pattern_detection",
   "workspace_id": 12345,
   "dry_run": false,
-  "success": true,
-  "insights_scanned": 42,
-  "insights_affected": 3,
-  "candidates_created": 2,
-  "duration_ms": 1200
+  "status": "accepted",
+  "success": true
 }
 ```
