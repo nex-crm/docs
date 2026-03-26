@@ -1,0 +1,47 @@
+---
+title: Get compounding job status
+openapi: get /v1/compounding/jobs/{job_run_id}
+---
+
+<Note>
+  This endpoint requires the `record.read` scope on your API key.
+</Note>
+
+## Overview
+
+Returns the current state of a compounding job triggered with [Trigger compounding job](/api-reference/compounding/trigger-job).
+
+Use this endpoint to poll for completion and retrieve the final job metrics.
+
+## Status Values
+
+| Status | Meaning |
+|--------|---------|
+| `accepted` | The trigger request was accepted and queued |
+| `running` | The background compounding worker is processing the job |
+| `completed` | The job finished successfully and final counts are available |
+| `failed` | The job failed and `error_details` contains failure information |
+
+## Example
+
+```bash
+curl "https://app.nex.ai/api/developers/v1/compounding/jobs/550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "job_run_id": "550e8400-e29b-41d4-a716-446655440000",
+  "job_type": "pattern_detection",
+  "workspace_id": 12345,
+  "status": "completed",
+  "dry_run": false,
+  "insights_scanned": 42,
+  "insights_affected": 3,
+  "candidates_created": 2,
+  "errors": 0,
+  "started_at": "2026-03-26T10:30:00Z",
+  "completed_at": "2026-03-26T10:30:02Z",
+  "duration_ms": 1200
+}
+```

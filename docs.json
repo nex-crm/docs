@@ -189,7 +189,8 @@
           {
             "group": "Compounding",
             "pages": [
-              "api-reference/compounding/trigger-job"
+              "api-reference/compounding/trigger-job",
+              "api-reference/compounding/get-job-status"
             ]
           }
         ]
