@@ -426,7 +426,15 @@ Scope: `record.write`
 Body: `{ "job_type": "pattern_detection", "dry_run": false }`
 Job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules), decay_sweep (reduce confidence on stale insights), metrics (snapshot pipeline metrics).
 Set `dry_run: true` to preview impact without persisting changes.
-Returns: `{ "job_run_id": "uuid", "job_type": "...", "workspace_id": 12345, "dry_run": false, "success": true, "insights_scanned": 42, "insights_affected": 3, "candidates_created": 2, "duration_ms": 1200 }`
+This endpoint is asynchronous and returns immediately.
+Returns: `{ "job_run_id": "uuid", "job_type": "...", "workspace_id": 12345, "dry_run": false, "status": "accepted", "success": true }`
+
+#### GET /v1/compounding/jobs/{job_run_id}
+Get compounding job status.
+Scope: `record.read`
+Path: `job_run_id` (uuid from the trigger response).
+Statuses: `accepted`, `running`, `completed`, `failed`.
+Returns final counts and timestamps when the job completes.
 
 ---
 

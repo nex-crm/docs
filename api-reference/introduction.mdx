@@ -151,7 +151,7 @@ The knowledge graph provides a unified view of all entities and their connection
 
 ### Compounding
 
-The compounding pipeline continuously refines your workspace's intelligence by consolidating duplicate insights, detecting patterns, synthesizing playbooks, and decaying stale data. Use the [Trigger compounding job](/api-reference/compounding/trigger-job) endpoint to run these intelligence jobs on demand -- for example, right after onboarding or bulk file ingestion -- instead of waiting for the next scheduled cycle.
+The compounding pipeline continuously refines your workspace's intelligence by consolidating duplicate insights, detecting patterns, synthesizing playbooks, and decaying stale data. Use the [Trigger compounding job](/api-reference/compounding/trigger-job) endpoint to start these intelligence jobs on demand, then poll [Get compounding job status](/api-reference/compounding/get-job-status) for completion and final metrics.
 
 ### Search
 

@@ -4092,7 +4092,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Triggers an on-demand compounding intelligence job for the workspace. Use after onboarding, file scanning, or bulk context ingestion to run intelligence pipelines immediately instead of waiting for the next scheduled cron cycle. Supported job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules from patterns), decay_sweep (reduce confidence on stale insights), and metrics (snapshot pipeline metrics). Set dry_run to true to preview impact without persisting changes.",
+                "description": "Triggers an on-demand compounding intelligence job for the workspace. Use after onboarding, file scanning, or bulk context ingestion to run intelligence pipelines immediately instead of waiting for the next scheduled cron cycle. Supported job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules from patterns), decay_sweep (reduce confidence on stale insights), and metrics (snapshot pipeline metrics). This endpoint is asynchronous and returns a job_run_id you can poll for status.",
                 "tags": [
                     "Compounding"
                 ],
@@ -4110,8 +4110,8 @@
                     "required": true
                 },
                 "responses": {
-                    "200": {
-                        "description": "Job execution result",
+                    "202": {
+                        "description": "Job accepted",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4132,6 +4132,514 @@
                     },
                     "401": {
                         "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/compounding/jobs/{job_run_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the current state of a compounding job triggered through the developer API. Poll this endpoint with the job_run_id returned by the trigger endpoint until the status changes from accepted or running to completed or failed.",
+                "tags": [
+                    "Compounding"
+                ],
+                "summary": "Get compounding job status",
+                "operationId": "getCompoundingJobStatus",
+                "parameters": [
+                    {
+                        "name": "job_run_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "The compounding job run identifier returned by the trigger endpoint",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/compounding.JobStatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Job not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notifications/feed": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns recent context alerts generated by the server-side notification system. Use the `since` parameter for incremental polling.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get Notification Feed",
+                "operationId": "getNotificationFeed",
+                "parameters": [
+                    {
+                        "description": "Maximum number of notifications to return (default: 20, max: 50)",
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "description": "Only return notifications after this ISO 8601 timestamp (for incremental polling)",
+                        "name": "since",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of notification feed items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NotificationFeedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notifications/preferences": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the current notification preferences including polling frequency, enabled notification types, and digest settings.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get Notification Preferences",
+                "operationId": "getNotificationPreferences",
+                "responses": {
+                    "200": {
+                        "description": "Current notification preferences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NotificationPreferencesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update notification polling frequency, enabled types, or digest settings. All fields are optional.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Update Notification Preferences",
+                "operationId": "updateNotificationPreferences",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.UpdateNotificationPreferencesRequest"
+                            }
+                        }
+                    },
+                    "description": "Notification preferences to update",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated notification preferences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.NotificationPreferencesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notifications/custom": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all custom AI notification rules configured for the authenticated user.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "List Custom Notification Rules",
+                "operationId": "listCustomNotificationRules",
+                "responses": {
+                    "200": {
+                        "description": "List of custom notification rules",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.ListCustomNotificationRulesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new AI-powered notification rule. Describe what you want to be notified about in natural language.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Create Custom Notification Rule",
+                "operationId": "createCustomNotificationRule",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/developer.CreateCustomNotificationRuleRequest"
+                            }
+                        }
+                    },
+                    "description": "Custom notification rule to create",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created custom notification rule",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.CustomNotificationRuleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/notifications/custom/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a specific custom notification rule by ID.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get Custom Notification Rule",
+                "operationId": "getCustomNotificationRule",
+                "parameters": [
+                    {
+                        "description": "Custom notification rule ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Custom notification rule details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/developer.CustomNotificationRuleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom notification rule not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete a custom notification rule. This action cannot be undone.",
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Delete Custom Notification Rule",
+                "operationId": "deleteCustomNotificationRule",
+                "parameters": [
+                    {
+                        "description": "Custom notification rule ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/httpx.APIError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Custom notification rule not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6991,9 +7499,55 @@
                         "type": "boolean",
                         "description": "Whether the job ran in dry-run mode"
                     },
+                    "status": {
+                        "type": "string",
+                        "description": "Current job status",
+                        "enum": [
+                            "accepted"
+                        ]
+                    },
                     "success": {
                         "type": "boolean",
-                        "description": "Whether the job completed successfully"
+                        "description": "Whether the job was accepted successfully"
+                    }
+                }
+            },
+            "compounding.JobStatusResponse": {
+                "type": "object",
+                "properties": {
+                    "job_run_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier for this compounding job"
+                    },
+                    "job_type": {
+                        "type": "string",
+                        "description": "The compounding job type",
+                        "enum": [
+                            "consolidation",
+                            "pattern_detection",
+                            "playbook_synthesis",
+                            "decay_sweep",
+                            "metrics"
+                        ]
+                    },
+                    "workspace_id": {
+                        "type": "integer",
+                        "description": "Workspace ID the job belongs to"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Current job status",
+                        "enum": [
+                            "accepted",
+                            "running",
+                            "completed",
+                            "failed"
+                        ]
+                    },
+                    "dry_run": {
+                        "type": "boolean",
+                        "description": "Whether the job is running in dry-run mode"
                     },
                     "insights_scanned": {
                         "type": "integer",
@@ -7001,15 +7555,187 @@
                     },
                     "insights_affected": {
                         "type": "integer",
-                        "description": "Number of insights modified (or that would be modified in dry-run mode)"
+                        "description": "Number of insights modified by the job"
                     },
                     "candidates_created": {
                         "type": "integer",
-                        "description": "Number of new candidates (e.g., merge candidates, pattern candidates) produced"
+                        "description": "Number of candidates or rules created by the job"
+                    },
+                    "errors": {
+                        "type": "integer",
+                        "description": "Number of errors recorded during the job"
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the job entered the system"
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the job completed, if it has finished"
                     },
                     "duration_ms": {
                         "type": "integer",
-                        "description": "Job execution time in milliseconds"
+                        "description": "Total job duration in milliseconds after completion"
+                    },
+                    "error_details": {
+                        "type": "object",
+                        "description": "Structured error payload for failed jobs",
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "developer.NotificationFeedItem": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique notification ID"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Notification type (e.g., 'context_alert', 'digest')"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Notification status (e.g., 'unread', 'read')"
+                    },
+                    "alert_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the alert condition was detected"
+                    },
+                    "sent_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the notification was sent"
+                    },
+                    "content": {
+                        "type": "object",
+                        "description": "Notification content payload",
+                        "properties": {
+                            "important_items": {
+                                "type": "array",
+                                "description": "List of important items flagged by the notification system",
+                                "items": {
+                                    "type": "object"
+                                }
+                            },
+                            "entity_changes": {
+                                "type": "array",
+                                "description": "List of entity changes that triggered the notification",
+                                "items": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "developer.NotificationFeedResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "description": "List of notification feed items",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.NotificationFeedItem"
+                        }
+                    }
+                }
+            },
+            "developer.NotificationPreferencesResponse": {
+                "type": "object",
+                "properties": {
+                    "frequency_minutes": {
+                        "type": "integer",
+                        "description": "How often the notification system polls for new alerts (in minutes)"
+                    },
+                    "enabled_types": {
+                        "type": "array",
+                        "description": "List of enabled notification types",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "digest_enabled": {
+                        "type": "boolean",
+                        "description": "Whether digest notifications are enabled"
+                    }
+                }
+            },
+            "developer.UpdateNotificationPreferencesRequest": {
+                "type": "object",
+                "properties": {
+                    "frequency_minutes": {
+                        "type": "integer",
+                        "description": "How often the notification system polls for new alerts (in minutes)"
+                    },
+                    "enabled_types": {
+                        "type": "array",
+                        "description": "List of notification types to enable",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "digest_enabled": {
+                        "type": "boolean",
+                        "description": "Whether to enable digest notifications"
+                    }
+                }
+            },
+            "developer.CustomNotificationRuleResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique rule ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable rule name"
+                    },
+                    "prompt": {
+                        "type": "string",
+                        "description": "The natural language prompt describing the notification condition"
+                    },
+                    "is_enabled": {
+                        "type": "boolean",
+                        "description": "Whether the rule is currently active"
+                    },
+                    "schedule": {
+                        "type": "string",
+                        "description": "Cron-style schedule for rule evaluation"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the rule was created"
+                    }
+                }
+            },
+            "developer.ListCustomNotificationRulesResponse": {
+                "type": "object",
+                "properties": {
+                    "rules": {
+                        "type": "array",
+                        "description": "List of custom notification rules",
+                        "items": {
+                            "$ref": "#/components/schemas/developer.CustomNotificationRuleResponse"
+                        }
+                    }
+                }
+            },
+            "developer.CreateCustomNotificationRuleRequest": {
+                "type": "object",
+                "required": [
+                    "description"
+                ],
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "description": "Natural language description of what you want to be notified about"
                     }
                 }
             }
