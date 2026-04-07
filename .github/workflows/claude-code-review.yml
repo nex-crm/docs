@@ -34,6 +34,7 @@ jobs:
 
       - name: Run Claude Code Review
         id: claude-review
+        continue-on-error: true
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -55,3 +56,7 @@ jobs:
                 ]
               }
             }
+
+      - name: Report review skipped
+        if: steps.claude-review.outcome == 'failure'
+        run: echo "::warning::Claude Code review failed (likely insufficient credits) — skipping"
