@@ -1,11 +1,11 @@
 ---
 title: 'API Reference'
-description: 'REST API for accessing and managing your Nex data'
+description: 'REST API for the Nex context layer — ingest, query, and ground AI agents in your organization'
 ---
 
 ## Welcome
 
-The Nex Developer API provides programmatic access to your organizational context. Generate API keys from the Nex web UI and use them to authenticate requests.
+The Nex Developer API provides programmatic access to your workspace's context graph — the unified knowledge base Nex builds from your connected tools and ingested context. Use it to ingest new context, query the graph, manage entities and relationships, and stream AI-derived insights back into your own systems. Generate API keys from the Nex web UI and use them to authenticate requests.
 
 <Card
   title="Nex API Specification"
@@ -56,26 +56,26 @@ Each API key has specific scopes that control what operations it can perform. Re
 
 ## Data Model Overview
 
-Nex uses an Entity-Attribute-Value (EAV) model that provides flexible data storage for different types of records. This architecture allows you to:
+Nex models your workspace as a knowledge graph. Entities are the nodes, relationships are the edges, and both are typed by definitions you control. The API lets you:
 
-- Define custom object types (entity definitions) with their own attributes
-- Create records (entities) that conform to these definitions
-- Store attribute values that can be of various types (text, email, relationships, etc.)
-- Define relationships between object types
-- Track activity with tasks, notes, and timeline events
+- Define object types and their attributes (the graph's schema)
+- Create records — the actual entities in the graph
+- Connect entities with typed relationships
+- Attach tasks, notes, and timeline events to any entity
+- Ingest unstructured context that is parsed, linked, and compounded into the graph over time
 
 ## Core Resources
 
 ### Objects (Entity Definitions)
 
-Objects define the structure and schema for your data types. Think of them as "templates" or "blueprints" for creating records.
+Objects define the schema of entities in your graph. Think of them as the blueprints for the nodes Nex will store, query, and connect.
 
-**Default Objects:**
+**Starter object types:**
 
-- **Person**: Individual contacts with attributes like name, email, job title, company relationships
-- **Company**: Organization records with attributes like name, domain, industry, team relationships
+- **Person**: individuals with attributes like name, email, job title, and links to other entities
+- **Company**: organizations with attributes like name, domain, and industry
 
-You can also create custom object types (e.g., "Project", "Deal") and define their attributes via the Schema endpoints.
+Every workspace can extend the graph with its own object types via the Schema endpoints — for example, `Project`, `Incident`, or `Playbook` — each with their own attributes and relationships.
 
 ### Records (Entities)
 
@@ -109,7 +109,7 @@ Relationships define how object types relate to each other (e.g., Person → Com
 
 ### Lists
 
-Lists allow you to organize and group records for campaigns, segments, or any custom categorization. Lists are associated with specific object types.
+Lists group records into working sets — the slices of the graph your agents, workflows, or external systems need to operate on. Each list is associated with a specific object type.
 
 ### Tasks
 
@@ -125,7 +125,7 @@ The timeline provides a chronological activity feed for any record, including ta
 
 ### Integrations
 
-Integrations connect your workspace to third-party services like Gmail, Google Calendar, Outlook, Slack, and CRM platforms. Use the OAuth flow to connect accounts, then Nex automatically syncs data into your workspace.
+Integrations are how the context layer pulls in signal. Connect your workspace to the tools where work happens — email, calendar, messaging, and other systems listed below — and Nex continuously ingests, parses, and links that activity into your knowledge graph.
 
 **Supported integrations:**
 
@@ -147,7 +147,7 @@ Integrations connect your workspace to third-party services like Gmail, Google C
 
 ### Knowledge Graph
 
-The knowledge graph provides a unified view of all entities and their connections. It combines CRM relationships (e.g., person works_at company) with AI-extracted knowledge from ingested context, including triplet relationships, entity insights, and semantic links between insights. Supports JSON output for programmatic access and an interactive HTML visualization. See [Get knowledge graph](/api-reference/graph/get-knowledge-graph).
+The knowledge graph is the unified view of every entity in your workspace and how they connect. It combines the typed relationships you define through the Schema API (e.g., `person works_at company`) with AI-extracted knowledge from ingested context — triplet relationships, entity insights, and semantic links between insights. The endpoint supports both JSON output for programmatic access and an interactive HTML visualization. See [Get knowledge graph](/api-reference/graph/get-knowledge-graph).
 
 ### Compounding
 
@@ -205,14 +205,12 @@ All error responses follow a consistent format:
 
 ## Common Use Cases
 
-- **Contact Management**: Create and update person and company records
-- **Schema Customization**: Define custom object types and attributes
-- **Relationship Mapping**: Link people to companies and track team structures
-- **List Management**: Organize contacts into targeted lists for campaigns
-- **Task Tracking**: Create follow-up tasks associated with contacts
-- **Note Taking**: Attach meeting notes and context to records
-- **Activity Feed**: View the complete timeline of changes for any record
-- **Search**: Find records across your entire workspace
-- **Data Enrichment**: Update records with additional information from external sources
-- **AI Context**: Add unstructured context and query your data with natural language
-- **Compounding**: Trigger on-demand intelligence jobs to consolidate insights, detect patterns, and synthesize playbooks
+- **Ingest context**: Push unstructured text, transcripts, or artifacts into the graph via the Context API so everything downstream can reason over them.
+- **Query in natural language**: Ask questions across every connected source and get grounded answers backed by the graph.
+- **Ground your own agents**: Build agents that read from the knowledge graph and Insights stream, so they act on the same context Nex itself does.
+- **Shape the schema**: Define the object types and relationships that match your domain — projects, incidents, playbooks, whatever your workflows need.
+- **Model the graph**: Create entities, connect them with typed relationships, and traverse the full graph for any node.
+- **Stream insights**: Subscribe to the Insights SSE stream to pipe AI-derived signal into your own systems in real time.
+- **Compound intelligence**: Trigger compounding jobs on demand to consolidate insights, detect patterns, and synthesize playbooks from accumulated context.
+- **Full-text search**: Find entities across the workspace with relevance scoring and type grouping.
+- **Timeline audit**: View the complete change history for any entity — tasks, notes, attribute changes, and relationship events.

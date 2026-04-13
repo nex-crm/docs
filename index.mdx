@@ -1,26 +1,35 @@
 ---
 title: "Welcome to Nex"
-description: "Developer documentation and API reference for the Nex platform"
+description: "Developer documentation and API reference for Nex — the context layer for AI agents"
 ---
 
-## Getting Started
+## What is Nex
 
-Nex provides a powerful REST API for sharing real-time organizational context with AI agents. Create and manage context, your organization's data schema, records, relationships, tasks, notes, and more.
+Nex is a context layer for AI agents. It unifies customer-facing signal from the tools where work actually happens — WhatsApp, email, Slack, meeting transcripts, support tickets, product events — into a single knowledge graph per workspace. AI agents use that graph as ground truth to answer natural-language queries, follow playbooks, and automate workflows.
 
-<CardGroup cols={2}>
+The REST API lets you ingest context, query it, and wire your own agents into the same substrate Nex itself runs on.
+
+<CardGroup cols={3}>
   <Card
-    title="API Reference"
-    icon="terminal"
-    href="/api-reference/introduction"
+    title="Ask your context anything"
+    icon="comments"
+    href="/api-reference/context/query-context"
   >
-    Explore the complete API documentation with interactive playground
+    Natural-language queries across every connected source
   </Card>
   <Card
-    title="Authentication"
-    icon="key"
-    href="/api-reference/introduction#authentication"
+    title="Turn workflows into playbooks"
+    icon="route"
+    href="/api-reference/compounding/trigger-job"
   >
-    Set up API keys and scopes for your integration
+    Guided agent workflows with context-driven decisions
+  </Card>
+  <Card
+    title="One context across all"
+    icon="diagram-project"
+    href="/api-reference/integrations/list-integrations"
+  >
+    A unified integration layer for every tool in your stack
   </Card>
 </CardGroup>
 
@@ -32,7 +41,26 @@ curl https://app.nex.ai/api/developers/v1/objects \
   -H "Authorization: Bearer sk-YOUR_API_KEY"
 ```
 
-## Core Features
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="terminal"
+    href="/api-reference/introduction"
+  >
+    Explore the complete API with an interactive playground
+  </Card>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/api-reference/introduction#authentication"
+  >
+    Set up API keys and scopes for your integration
+  </Card>
+</CardGroup>
+
+## Building blocks
+
+The API exposes the primitives that make up the context graph: the schema of your entities, the records that populate it, the relationships between them, the context you ingest, and the intelligence layer that compounds it over time.
 
 <CardGroup cols={3}>
   <Card
@@ -40,62 +68,62 @@ curl https://app.nex.ai/api/developers/v1/objects \
     icon="cube"
     href="/api-reference/schema/create-object-definition"
   >
-    Define custom object types and attributes
+    Define object types and attributes for your knowledge graph
   </Card>
   <Card
     title="Records"
     icon="database"
     href="/api-reference/records/create-a-new-record"
   >
-    Create, read, update, and delete records
+    Create, read, update, and delete entities in the graph
   </Card>
   <Card
     title="Relationships"
     icon="link"
     href="/api-reference/relationships/create-relationship-definition"
   >
-    Connect records across object types
+    Model how entities in the graph connect to each other
+  </Card>
+  <Card
+    title="Context"
+    icon="brain"
+    href="/api-reference/context/query-context"
+  >
+    Ingest unstructured context and query it in natural language
+  </Card>
+  <Card
+    title="Insights"
+    icon="lightbulb"
+    href="/api-reference/insights/stream-insights"
+  >
+    Stream AI-derived insights back into your own systems
+  </Card>
+  <Card
+    title="Graph"
+    icon="diagram-project"
+    href="/api-reference/graph/get-knowledge-graph"
+  >
+    Traverse the full knowledge graph for an entity
   </Card>
   <Card
     title="Lists"
     icon="list"
     href="/api-reference/lists/create-a-list"
   >
-    Organize records into lists and segments
+    Group records into working sets for agents and workflows
   </Card>
   <Card
-    title="Tasks"
+    title="Tasks & notes"
     icon="circle-check"
     href="/api-reference/tasks/create-a-task"
   >
-    Create and track follow-up tasks
+    Attach actions and free-form context to any record
   </Card>
   <Card
-    title="Notes"
-    icon="note-sticky"
-    href="/api-reference/notes/create-a-note"
-  >
-    Attach notes and context to records
-  </Card>
-  <Card
-    title="Timeline"
+    title="Timeline & search"
     icon="clock-rotate-left"
     href="/api-reference/timeline/get-record-timeline"
   >
-    View the full activity history for any record
-  </Card>
-  <Card
-    title="Search"
-    icon="magnifying-glass"
-    href="/api-reference/search/search-records"
-  >
-    Full-text search across all records
-  </Card>
-  <Card
-    title="AI Intelligence"
-    icon="brain"
-    href="/api-reference/context/query-context"
-  >
-    Ask questions and add context with AI
+    Audit history and full-text search across the graph
   </Card>
 </CardGroup>
