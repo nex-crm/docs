@@ -66,9 +66,10 @@ temp/
 navigation_suggestion.json
 temp_nav_output.txt
 
-# Lock files (optional - uncomment if you want to ignore them)
-# package-lock.json
-# yarn.lock
+# Lock files — this project uses bun; reject others
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # Cache
 .cache/

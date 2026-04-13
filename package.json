@@ -2,6 +2,7 @@
   "name": "nex-docs",
   "version": "1.0.0",
   "description": "Nex API Documentation",
+  "packageManager": "bun@1.3.10",
   "scripts": {
     "dev": "mintlify dev",
     "update-api-docs": "./scripts/update-api-docs.sh",
