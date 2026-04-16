@@ -31,6 +31,8 @@ All API requests should be made to:
 https://app.nex.ai/api/developers
 ```
 
+All versioned endpoints are prefixed with `/v1/`. For example, listing objects is `GET https://app.nex.ai/api/developers/v1/objects`.
+
 ## Scopes
 
 Each API key has specific scopes that control what operations it can perform. Request the scopes you need when generating your API key.
@@ -52,6 +54,8 @@ Each API key has specific scopes that control what operations it can perform. Re
 | `note.write` | Create, update, and delete notes |
 | `integration.read` | List integrations and check connection status |
 | `integration.write` | Connect and disconnect integrations |
+| `notification.read` | Read notification preferences and custom notification rules |
+| `notification.write` | Create, update, and delete notification preferences and custom rules |
 | `insight.stream` | SSE insight streaming |
 
 ## Data Model Overview
@@ -129,21 +133,24 @@ Integrations connect your workspace to third-party services like Gmail, Google C
 
 **Supported integrations:**
 
-| Type | Provider | Name |
-|------|----------|------|
-| `email` | `google` | Gmail |
-| `calendar` | `google` | Google Calendar |
-| `email` | `microsoft` | Outlook |
-| `calendar` | `microsoft` | Outlook Calendar |
-| `messaging` | `slack` | Slack |
-| `crm` | `attio` | Attio |
-| `crm` | `hubspot` | HubSpot |
-| `crm` | `salesforce` | Salesforce |
+| Type | Provider | Name | Connect method |
+|------|----------|------|----------------|
+| `email` | `google` | Gmail | Direct OAuth |
+| `calendar` | `google` | Google Calendar | Direct OAuth |
+| `email` | `microsoft` | Outlook | Direct OAuth |
+| `calendar` | `microsoft` | Outlook Calendar | Direct OAuth |
+| `messaging` | `slack` | Slack | Direct OAuth |
+| `crm` | `attio` | Attio | Direct OAuth |
+| `crm` | `hubspot` | HubSpot | Nango-brokered OAuth |
+| `crm` | `salesforce` | Salesforce | Nango-brokered OAuth |
+| `messaging` | `whatsapp` | WhatsApp Business | Config-based |
 
-**OAuth flow:**
+**OAuth flow** (applies to Direct OAuth and Nango-brokered providers):
 1. Call `POST /v1/integrations/{type}/{provider}/connect` to get an `auth_url` and `connect_id`
 2. Open the `auth_url` in a browser for the user to authorize
 3. Poll `GET /v1/integrations/connect/{connect_id}/status` until status is `"connected"`
+
+WhatsApp uses a config-based connect flow rather than OAuth — contact Nex support for setup.
 
 ### Knowledge Graph
 
