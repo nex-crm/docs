@@ -11,5 +11,9 @@
   "dependencies": {
     "@mintlify/scraping": "latest",
     "swagger2openapi": "latest"
+  },
+  "devDependencies": {
+    "@secretlint/secretlint-rule-preset-recommend": "^12.2.0",
+    "secretlint": "^12.2.0"
   }
 }

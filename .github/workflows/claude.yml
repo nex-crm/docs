@@ -1,5 +1,25 @@
 name: Claude Code
 
+# Delegates to the org's reusable claude.yml which routes @claude
+# mentions in issues, PR review comments, PR reviews, and issue
+# bodies/titles to the SHA-pinned anthropics/claude-code-action.
+#
+# The reusable bundles:
+#   - SHA-pinned actions/checkout + claude-code-action (was @v1 mutable
+#     in the previous local copy of this workflow)
+#   - Shared `if:` predicate matching nex-crm/app/.github/workflows/claude.yml
+#   - Org-wide ANTHROPIC_API_KEY secret (replaces the previous
+#     CLAUDE_CODE_OAUTH_TOKEN flow — both secrets authenticate Claude;
+#     the reusable standardises on the org-level ANTHROPIC_API_KEY).
+#
+# Public-repo consumption of nex-crm/.github reusables works because
+# .github has access_level=organization. Proven by docs-link-check.yml
+# (docs#32, docs#33).
+#
+# NOTE: 98294031… is the COMMIT sha v0.6.2 dereferences to. The
+# annotated-tag-object sha (34310b13…) cannot be used as a `uses:` ref —
+# GitHub Actions silently fails resolution. See nex-crm/.github#63.
+
 on:
   issue_comment:
     types: [created]
@@ -10,41 +30,15 @@ on:
   pull_request_review:
     types: [submitted]
 
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+  id-token: write
+  actions: read
+
 jobs:
   claude:
-    if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
-      actions: read # Required for Claude to read CI results on PRs
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
-        with:
-          fetch-depth: 1
-
-      - name: Run Claude Code
-        id: claude
-        uses: anthropics/claude-code-action@38ec876110f9fbf8b950c79f534430740c3ac009 # ratchet:anthropics/claude-code-action@v1.0.114
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-
-          # This is an optional setting that allows Claude to read CI results on PRs
-          additional_permissions: |
-            actions: read
-
-# Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-# prompt: 'Update the pull request description to include a summary of changes.'
-
-# Optional: Add claude_args to customize behavior and configuration
-# See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-# or https://code.claude.com/docs/en/cli-reference for available options
-# claude_args: '--allowed-tools Bash(gh pr:*)'
-
+    uses: nex-crm/.github/.github/workflows/claude.yml@98294031b84bf07f8bdf227940225ba21e9d2678 # v0.6.2
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
