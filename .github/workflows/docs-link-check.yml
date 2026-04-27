@@ -17,9 +17,9 @@ on:
 
 jobs:
   check:
-    # NOTE: 98294031… is the COMMIT sha v0.6.2 dereferences to. The
-    # earlier pin (34310b13…) was the annotated-tag-object sha — GitHub
-    # Actions cannot resolve `uses: …@<tag-object-sha>`, the workflow
-    # silently fails validation with conclusion=failure and zero jobs.
-    # Verified with: gh api repos/nex-crm/.github/git/tags/<tag-obj-sha> --jq .object.sha
-    uses: nex-crm/.github/.github/workflows/docs-link-check.yml@98294031b84bf07f8bdf227940225ba21e9d2678 # v0.6.2
+    # NOTE: v0.7.1 is a lightweight tag (object.type=commit) so the SHA
+    # below resolves directly. v0.6.0–v0.6.2 were annotated tags whose
+    # tag-object SHA (e.g. 34310b13…) cannot be used as a `uses:` ref —
+    # workflow silently fails with conclusion=failure and zero jobs.
+    # See nex-crm/.github#63.
+    uses: nex-crm/.github/.github/workflows/docs-link-check.yml@bd99db2b92e0accf349dbebc150cc2d5e0629046 # v0.7.1
