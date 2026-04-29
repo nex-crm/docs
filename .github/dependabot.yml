@@ -1,7 +1,34 @@
 version: 2
+
+# Grant Dependabot read access to private GitHub repos in the org.
+# Required because `.github/workflows/secret-scan.yml` and
+# `docs-link-check.yml` both consume reusable workflows from the
+# private `nex-crm/.github` repo (see the `uses: nex-crm/.github/...`
+# refs). Without this, every weekly Dependabot run fails closed with
+# `git_dependencies_not_reachable` on those workflow files.
+#
+# `DEPENDABOT_PRIVATE_REPO_TOKEN` must exist as a Dependabot secret
+# (org or repo level) holding a PAT with read access to nex-crm/.github
+# (and any other private nex-crm/* reusable-workflow source repos we
+# add later). To provision once at the org level:
+#
+#   gh secret set DEPENDABOT_PRIVATE_REPO_TOKEN \
+#     --app dependabot --org nex-crm --visibility all
+#
+# (Token needs `repo:read` scope. Same secret unblocks the parallel
+# `wuphf` failure with the same root cause.)
+registries:
+  nex-crm-github:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    password: ${{secrets.DEPENDABOT_PRIVATE_REPO_TOKEN}}
+
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    registries:
+      - nex-crm-github
     schedule:
       interval: "weekly"
       day: "monday"
