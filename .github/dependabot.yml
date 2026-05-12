@@ -30,16 +30,15 @@ updates:
     registries:
       - nex-crm-github
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 21
     # reviewers: ["nex-crm/engineering"]
     # labels: ["dependencies"]
     groups:
       github-actions:
         patterns: ["*"]
-        update-types: ["minor", "patch"]
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -47,16 +46,15 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      interval: "monthly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 21
     # reviewers: ["nex-crm/engineering"]
     # labels: ["dependencies"]
     groups:
       all-dependencies:
         patterns: ["*"]
-        update-types: ["minor", "patch"]
     commit-message:
       prefix: "chore"
       include: "scope"
