@@ -25,4 +25,4 @@ jobs:
     # tag-object SHA (e.g. 34310b13…) cannot be used as a `uses:` ref —
     # workflow silently fails with conclusion=failure and zero jobs.
     # See nex-crm/.github#63.
-    uses: nex-crm/.github/.github/workflows/docs-link-check.yml@ef2321b9cd3a83561a6a4bca70df635d58766cb0 # ratchet:nex-crm/.github/.github/workflows/docs-link-check.yml@v2
+    uses: nex-crm/.github/.github/workflows/docs-link-check.yml@f34cc861ed2f735d474ef47dd396cb3aab591d7b # ratchet:nex-crm/.github/.github/workflows/docs-link-check.yml@v2
