@@ -1,6 +1,6 @@
 # Nex Developer API
 
-> Nex is a platform for sharing real-time organizational context with AI agents. The Developer API provides programmatic access to your data via REST endpoints with Bearer token authentication.
+> Nex is where AI workflows become reliable business software — the workflow execution and context layer for AI-native business operations. The Developer API provides programmatic access to your data via REST endpoints with Bearer token authentication.
 
 ## Authentication
 
@@ -345,7 +345,7 @@ Returns: Array of IntegrationResponse objects.
 IntegrationResponse fields: type (email, calendar, messaging, crm), provider (google, microsoft, slack, attio, hubspot, salesforce), display_name, description, connections[].
 ConnectionResponse fields: id, status, identifier (email/username).
 
-Supported integrations: Gmail (email/google), Google Calendar (calendar/google), Outlook (email/microsoft), Outlook Calendar (calendar/microsoft), Slack (messaging/slack), Attio (crm/attio), HubSpot (crm/hubspot), Salesforce (crm/salesforce).
+Supported integrations: Gmail (email/google), Google Calendar (calendar/google), Outlook (email/microsoft), Outlook Calendar (calendar/microsoft), Slack (messaging/slack), Attio (crm/attio), HubSpot (crm/hubspot), Salesforce (crm/salesforce), WhatsApp Business (messaging/whatsapp — config-based connect rather than OAuth; contact Nex support for setup).
 
 #### POST /v1/integrations/{type}/{provider}/connect
 Start an OAuth connection flow.
@@ -375,7 +375,7 @@ Query params: limit (integer, 1-5000, default 1000 — limits number of entity n
 Returns: GraphResponse with nodes[], edges[], relationship_definitions[], context_edges[], insight_nodes[], insights (map), total_nodes, total_edges, total_context_edges.
 Note: total_nodes and total_edges reflect workspace-wide counts and may exceed the returned slice. Nodes are returned by most recent creation date. To retrieve the full graph, increase the limit up to 5000.
 
-Node types: CRM entities (numeric IDs like "12345"), ghosts ("ghost:123"), entity insights ("ei:123"), knowledge insights ("ki:123").
+Node types: entities (numeric IDs like "12345"), ghosts ("ghost:123"), entity insights ("ei:123"), knowledge insights ("ki:123").
 
 context_edges array has edge_type field:
 - `context` — from ingested text (no confidence)
@@ -424,7 +424,7 @@ Returns job status and generated list results when completed.
 Trigger an on-demand compounding intelligence job.
 Scope: `record.write`
 Body: `{ "job_type": "pattern_detection", "dry_run": false }`
-Job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (generate playbook rules), decay_sweep (reduce confidence on stale insights), metrics (snapshot pipeline metrics).
+Job types: consolidation (merge near-duplicate insights), pattern_detection (discover recurring patterns), playbook_synthesis (synthesize reusable action rules from detected patterns), decay_sweep (reduce confidence on stale insights), metrics (snapshot pipeline metrics).
 Set `dry_run: true` to preview impact without persisting changes.
 This endpoint is asynchronous and returns immediately.
 Returns: `{ "job_run_id": "uuid", "job_type": "...", "workspace_id": 12345, "dry_run": false, "status": "accepted", "success": true }`

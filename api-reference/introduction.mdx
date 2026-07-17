@@ -79,7 +79,7 @@ Objects define the schema of entities in your graph. Think of them as the bluepr
 - **Person**: individuals with attributes like name, email, job title, and links to other entities
 - **Company**: organizations with attributes like name, domain, and industry
 
-Every workspace can extend the graph with its own object types via the Schema endpoints — for example, `Project`, `Incident`, or `Playbook` — each with their own attributes and relationships.
+Every workspace can extend the graph with its own object types via the Schema endpoints — for example, `Incident`, `Vendor`, or `Contract` — each with their own attributes and relationships.
 
 ### Records (Entities)
 
@@ -158,7 +158,7 @@ The knowledge graph is the unified view of every entity in your workspace and ho
 
 ### Compounding
 
-The compounding pipeline continuously refines your workspace's intelligence by consolidating duplicate insights, detecting patterns, synthesizing playbooks, and decaying stale data. Use the [Trigger compounding job](/api-reference/compounding/trigger-job) endpoint to start these intelligence jobs on demand, then poll [Get compounding job status](/api-reference/compounding/get-job-status) for completion and final metrics.
+The compounding pipeline continuously refines your workspace's intelligence by consolidating duplicate insights, detecting patterns, synthesizing reusable action rules, and decaying stale data. Use the [Trigger compounding job](/api-reference/compounding/trigger-job) endpoint to start these intelligence jobs on demand, then poll [Get compounding job status](/api-reference/compounding/get-job-status) for completion and final metrics.
 
 ### Search
 
@@ -215,9 +215,9 @@ All error responses follow a consistent format:
 - **Ingest context**: Push unstructured text, transcripts, or artifacts into the graph via the Context API so everything downstream can reason over them.
 - **Query in natural language**: Ask questions across every connected source and get grounded answers backed by the graph.
 - **Ground your own agents**: Build agents that read from the knowledge graph and Insights stream, so they act on the same context Nex itself does.
-- **Shape the schema**: Define the object types and relationships that match your domain — projects, incidents, playbooks, whatever your workflows need.
+- **Shape the schema**: Define the object types and relationships that match your domain — incidents, vendors, contracts, whatever your workflows need.
 - **Model the graph**: Create entities, connect them with typed relationships, and traverse the full graph for any node.
 - **Stream insights**: Subscribe to the Insights SSE stream to pipe AI-derived signal into your own systems in real time.
-- **Compound intelligence**: Trigger compounding jobs on demand to consolidate insights, detect patterns, and synthesize playbooks from accumulated context.
+- **Compound intelligence**: Trigger compounding jobs on demand to consolidate insights, detect patterns, and synthesize reusable rules from accumulated context.
 - **Full-text search**: Find entities across the workspace with relevance scoring and type grouping.
 - **Timeline audit**: View the complete change history for any entity — tasks, notes, attribute changes, and relationship events.

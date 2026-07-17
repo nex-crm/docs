@@ -15,7 +15,7 @@ This documentation is automatically generated from your OpenAPI specification us
 
 ```bash
 # Run the automation script
-npm run update-api-docs
+bun run update-api-docs
 
 # Or run the script directly
 ./scripts/update-api-docs.sh
@@ -24,13 +24,13 @@ npm run update-api-docs
 ### Validate OpenAPI Specification
 
 ```bash
-npm run validate-openapi
+bun run validate-openapi
 ```
 
 ### Preview Documentation Locally
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 ## Automatic Updates
@@ -93,7 +93,7 @@ scripts/
 If validation fails, check your OpenAPI spec with:
 
 ```bash
-mintlify openapi-check api-reference/openapi.json
+bun run validate-openapi
 ```
 
 ### Missing Endpoints
